@@ -185,15 +185,58 @@ public:
 
         return false;
     }   
-    /*TE &operator()(string start, string end)= 0;  
-    float density() = 0;
-    bool isDense(float threshold = 0.5) = 0;
-    bool isConnected()= 0;
+    //TE &operator()(string start, string end)= 0;  
+    float density() //O(n^2) --- POSIBLE CAMBIO
+    {
+        unordered_map<string, bool> edgges;
+        int v = 0;
+        auto beg = vertexes.begin();
+        while(beg!=vertexes.end())
+        {
+            v++;
+            for(auto& it : (*beg).second->edges )
+            {
+                string edege;
+                edege  = it->vertexes[0]->id + "-" + it->vertexes[1]->id;
+                edgges[edege] = true;                
+            }
+            beg++;
+        }
+        int e = 0;
+        for(auto& it : edgges)
+            {
+                ++e;
+                //cout<<it.first<<" "<<endl;
+            }
+       // cout<<"**    e: "<<e<<" v: "<<v<<"   **"<<endl;
+        auto density = 2.0*e/(1.0*v*(1.0*v-1.0));
+        return density;
+
+    }
+    bool isDense(float threshold = 0.5)
+    {
+        auto densidad = this->density();
+        //cout<<densidad<<"aaa";
+        if(densidad>=threshold) return true;
+        return false;
+    }
+    /*bool isConnected()= 0;
     bool isStronglyConnected() throw();
-    bool empty();
-    void clear()= 0;  
-      */
-    void displayVertex(string id)
+    */
+    bool empty()
+    {
+        return vertexes.empty();
+    }
+    void clear()
+    {
+        while(!vertexes.empty())
+        {
+            auto beg = vertexes.begin();
+            deleteVertex(beg->first);
+        }
+    } 
+      
+    void displayVertex(string id) // O(E)
     {
         if(!check_key(vertexes,id))
         {
@@ -207,9 +250,16 @@ public:
             cout<<"( "<<it->vertexes[0]->id<<","<<it->vertexes[1]->id<<")"<<" ";
         cout<<endl;
     }
-    /*
-    bool findById(string id) = 0;
-    void display() = 0;*/
+    
+    bool findById(string id)// O(1)
+    {
+        if(!check_key(vertexes,id))
+        {
+            return false;
+        }
+        return true;
+    }
+    //void display() = 0;
 };
 
 #endif

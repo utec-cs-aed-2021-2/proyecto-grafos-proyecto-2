@@ -4,9 +4,9 @@
 --------
 
 ## Integrantes
-- 
-- 
-- 
+- Mauricio Croquet
+- Fracisco Maggot
+- Rubén Vargas
 
 ----
 
