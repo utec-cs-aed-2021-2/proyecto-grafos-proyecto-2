@@ -41,11 +41,15 @@ struct Vertex {
 
 template<typename TV, typename TE>
 class Graph{
-private:    
+protected:    
     std::unordered_map<string, Vertex<TV, TE>*>  vertexes;
     
 public:
     Graph() = default;
+    ~Graph()
+    {
+
+    }
     bool insertVertex(string id, TV vertex)
     {
         Vertex<TV,TE>* vert = new Vertex<TV,TE>;
@@ -62,7 +66,7 @@ public:
         link->weight = w;
         link->vertexes[0] = vert1;
         link->vertexes[1] = vert2;
-        
+        cout<<"Nada que ver"<<endl;
         vert1->edges.push_front(link);
         vert2->edges.push_front(link);
         return true;
@@ -242,7 +246,8 @@ public:
     }
     bool isConnected()
     {
-
+            //TO DO
+            return false;
     }
     //bool isStronglyConnected() throw();
     
