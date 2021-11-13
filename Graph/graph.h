@@ -185,7 +185,27 @@ public:
 
         return false;
     }   
-    //TE &operator()(string start, string end)= 0;  
+    TE &operator()(string start, string end)
+    {
+        if(!check_key(vertexes,start)) throw("No existe");
+        if(!check_key(vertexes,end)) throw("No existe");
+        auto it = vertexes[start]->edges.begin();
+        while(it!=vertexes[start]->edges.end())
+        {
+            if((*it)->vertexes[0]->id == start && (*it)->vertexes[1]->id == end)
+            {
+                auto &peso = (*it)->weight;
+                return peso;
+            }
+            else if ((*it)->vertexes[1]->id == start && (*it)->vertexes[0]->id == end)
+            {
+                auto &peso = (*it)->weight;
+                return peso;             
+            }
+            ++it;
+        }
+        throw("No existe");      
+    }  
     float density() //O(n^2) --- POSIBLE CAMBIO
     {
         unordered_map<string, bool> edgges;
@@ -220,9 +240,12 @@ public:
         if(densidad>=threshold) return true;
         return false;
     }
-    /*bool isConnected()= 0;
-    bool isStronglyConnected() throw();
-    */
+    bool isConnected()
+    {
+
+    }
+    //bool isStronglyConnected() throw();
+    
     bool empty()
     {
         return vertexes.empty();
@@ -251,13 +274,57 @@ public:
         cout<<endl;
     }
     
-    bool findById(string id)// O(1)
+    bool findByIdV(string id)// O(1)
     {
         if(!check_key(vertexes,id))
         {
             return false;
         }
         return true;
+    }
+
+    bool findByIdE(string id1, string id2)
+    {
+        if(!check_key(vertexes,id1)) return false;
+        if(!check_key(vertexes,id2)) return false;
+        auto it = vertexes[id1]->edges.begin();
+        while(it!=vertexes[id1]->edges.end())
+        {
+            if((*it)->vertexes[0]->id == id1 && (*it)->vertexes[1]->id == id2)
+            {
+                cout<<"("<<(*it)->vertexes[0]->id<<"-"<<(*it)->vertexes[1]->id<<")"<<endl;
+                return true;
+            }
+            else if ((*it)->vertexes[1]->id == id1 && (*it)->vertexes[0]->id == id2)
+            {
+                cout<<"("<<(*it)->vertexes[0]->id<<"-"<<(*it)->vertexes[1]->id<<")"<<endl;
+                return true;                
+            }
+            ++it;
+        }
+        return false;
+    }
+
+    Edge<TV,TE>* getEdge(string id1, string id2)
+    {
+        if(!check_key(vertexes,id1)) throw("No existe");
+        if(!check_key(vertexes,id2)) throw("No existe");
+        auto it = vertexes[id1]->edges.begin();
+        while(it!=vertexes[id1]->edges.end())
+        {
+            if((*it)->vertexes[0]->id == id1 && (*it)->vertexes[1]->id == id2)
+            {
+                cout<<"("<<(*it)->vertexes[0]->id<<"-"<<(*it)->vertexes[1]->id<<")"<<endl;
+                return (*it);
+            }
+            else if ((*it)->vertexes[1]->id == id1 && (*it)->vertexes[0]->id == id2)
+            {
+                cout<<"("<<(*it)->vertexes[0]->id<<"-"<<(*it)->vertexes[1]->id<<")"<<endl;
+                return (*it);                
+            }
+            ++it;
+        }
+        throw("No existe");
     }
     //void display() = 0;
 };
