@@ -23,9 +23,9 @@ template<typename TV, typename TE, typename T>
 bool check_key(unordered_map<TV, TE> m, T key)
 {
     // Key is not present
-    if (m.count(key) == 0)
+    if (m.find(key) == m.end())
         return false;
- 
+
     return true;
 }
 template<typename TV, typename TE>
@@ -62,6 +62,7 @@ public:
     }  
     bool createEdge(string id1, string id2, TE w)
     {
+        if (!check_key(vertexes, id1) || !check_key(vertexes, id2)) return false;
         Vertex<TV,TE>* vert1 = vertexes[id1];
         Vertex<TV,TE>* vert2 = vertexes[id2];
         Edge<TV,TE>* link = new Edge<TV,TE>;
@@ -128,7 +129,6 @@ public:
         }
         cout<<"Cant delete, Vertex not present"<<endl;
         return false;
- 
     }    
     bool deleteEdge(string id1, string id2)
     {
