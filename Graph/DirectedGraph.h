@@ -2,249 +2,279 @@
 #define NONDIRECTEDGRAPH_H
 
 #include "graph.h"
-
-template<typename TV, typename TE>
-using edge_queue_t = priority_queue<Edge, vector<Edge>, function<bool(Edge, Edge)> >;
-
-template<typename TV, typename TE>
-inline auto edge_compare = [](Edge e1, Edge e2) {return e1.weight > e2.weight;};
+#include <stack>
+#include <vector>
 
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
+    private: 
+        std::unordered_map<string, Vertex<TV, TE>*>  vertexes;
     public:
     DirectedGraph() = default;
+    ~DirectedGraph() {
+        clear();
+    }
+    bool insertVertex(string id, TV vertex)
+    {
+        Vertex<TV,TE>* vert = new Vertex<TV,TE>;
+        vert->data = vertex;
+        vert->id = id;
+        vertexes[id] = vert;
+        return true;
+    }  
+
     bool createEdge(string id1, string id2, TE w)
     {
-        Vertex<TV,TE>* vert1 = this->vertexes[id1];
-        Vertex<TV,TE>* vert2 = this->vertexes[id2];
+        if (!findVertex(id1) || !findVertex(id2)) return false;
+        Vertex<TV,TE>* vert = vertexes[id1];
         Edge<TV,TE>* link = new Edge<TV,TE>;
         link->weight = w;
-        link->vertexes[0] = vert1;
-        link->vertexes[1] = vert2;
-        //cout<<"prueba"<<endl;
-        vert1->edges.push_front(link);
-        //vert2->edges.push_front(link);
+        link->vertex[0] = vertexes[id1];
+        link->vertex[1] = vertexes[id2];
+        vert->edges.push_front(link);
         return true;
-    }   
-    bool deleteEdge(string id1, string id2)
-    {
-        Vertex<TV,TE>* vert1 = this->vertexes[id1];
-        Vertex<TV,TE>* vert2 = this->vertexes[id2];
-
-        int check1 = 0;
-        auto it = this->vertexes[id1]->edges.begin();
-        auto ending = this->vertexes[id1]->edges.end();
-        while(it!=ending)
-        {
-            if((*it)->vertexes[0]->id == vert1->id && (*it)->vertexes[1]->id == vert2->id )
-            {
-                vert1->edges.erase(it);
-                return true;
-            }
-            ++it;
-        }
-        return false;
-        
-    }   
+    }    
+ 
     bool deleteVertex(string id)// MUY COSTOSO
     {
-        if(check_key(this->vertexes,id))
-        {
-            //auto it = vertexes[id]->edges.begin();
-            auto ending = this->vertexes[id]->edges.end();
-            while(!this->vertexes[id]->edges.empty())
-            {
-                auto it = this->vertexes[id]->edges.begin();
-                string id2 = "";
-                id2 = (*it)->vertexes[1]->id;
-                if(!deleteEdge(id,id2))
-                {
-                    deleteEdge(id2,id);
-                }
-            }
-            auto it = this->vertexes.begin();
-            while(it!=this->vertexes.end())
-            {
-                //cout<<(*it).second->id<<endl;
-                auto ited = it->second->edges.begin();
-                while(ited!=it->second->edges.end())
-                {
-                    //cout<<"("<<(*ited)->vertexes[0]->id<<"-"<<(*ited)->vertexes[1]->id<<")"<<endl;
-                    if((*ited)->vertexes[1]->id==id)
-                    {
-                        deleteEdge((*ited)->vertexes[0]->id,id);
-                        ited = it->second->edges.begin();
-                    }
-                    else
-                    {
-                        ++ited;
+        if (!findVertex(id)) return false;
+        Vertex<TV, TE>* vert = vertexes[id];
+        vertexes.erase(id);
+        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
+            if (((it->second)->id) != id) {
+                for (auto edge = (it->second)->edges.begin(); edge != (it->second)->edges.end(); edge++) {
+                    if ((*edge)->vertex[1]->id == id) {
+                        (it->second)->edges.erase(edge);
                     }
                 }
-                ++it;
             }
-            this->vertexes.erase(id);
-            return true;
         }
-        cout<<"Cant delete, Vertex not present"<<endl;
-        return false;
- 
+        return true;
     }    
-    double density()
+
+    bool deleteEdge(string id1, string id2)
     {
-        unordered_map<string, bool> edgges;
-            int v = 0;
-            auto beg = this->vertexes.begin();
-            while(beg!=this->vertexes.end())
-            {
-                v++;
-                for(auto& it : (*beg).second->edges )
-                {
-                    string edege;
-                    edege  = it->vertexes[0]->id + "-" + it->vertexes[1]->id;
-                    edgges[edege] = true;                
-                }
-                beg++;
+        for (auto it = vertexes[id1]->edges.begin(); it != vertexes[id1]->edges.end(); it++) {
+            if ((it->second)->vertex[1]->id == id2) {
+                (it->second)->edges.erase(it);
             }
-            int e = 0;
-            for(auto& it : edgges)
-                {
-                    ++e;
-                    //cout<<it.first<<" "<<endl;
-                }
-        // cout<<"**    e: "<<e<<" v: "<<v<<"   **"<<endl;
-            auto density = 1.0*e/(1.0*v*(1.0*v-1.0));
-            return density;
+        }
+    }   
+
+    TE &operator()(string start, string end)
+    {
+        if (!findVertex(start) || !findVertex(end)) throw("No existe");
+
+        for (auto it = vertexes[start]->edges.begin(); it != vertexes[end]->edges.end(); it++) {
+            if ((*it)->vertex[1]->id == end) {
+                return (*it)->peso;
+            }
+        }
+        // para grafo no dirigido
+        for (auto it = vertexes[end]->edges.begin(); it != vertexes[end]->edges.end(); it++) {
+            if ((*it)->vertex[0]->id == start) {
+                return (*it)->peso;
+            }
+        }
+    }  
+
+    float density()
+    {
+        int edges = 0;
+        int vertices = vertexes.size();
+        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
+            edges += (it->second)->edges.size();
+        }
+        return 1.0*(edges)/(vertices*(vertices-1)); 
     }
+
     bool isDense(float threshold = 0.5)
     {
         auto densidad = this->density();
-        //cout<<densidad<<"aaa";
         if(densidad>=threshold) return true;
         return false;
     }
-  bool findByIdE(string id1, string id2)
-    {
-        if(!check_key(this->vertexes,id1)) return false;
-        if(!check_key(this->vertexes,id2)) return false;
-        auto it = this->vertexes[id1]->edges.begin();
-        while(it!=this->vertexes[id1]->edges.end())
-        {
-            if((*it)->vertexes[0]->id == id1 && (*it)->vertexes[1]->id == id2)
-            {
-                //cout<<"("<<(*it)->vertexes[0]->id<<"-"<<(*it)->vertexes[1]->id<<")"<<endl;
-                return true;
-            }
 
-            ++it;
+    bool isConnected()
+    {
+        return isStronglyConnected();
+    }
+
+    bool isStronglyConnected() {
+        unordered_map<string, bool> visitado;
+
+        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
+            for (auto edge = (it->second)->edges.begin(); edge != (it->second)->edges.end(); edge++) {
+                visitado[(*edge)->vertex[1]->id] = true;
+            }
         }
+        if (visitado.size() != vertexes.size()) return false;
+        return true;
+    }
+
+    bool findEdge(string id1, string id2)
+    {
+        if(!findVertex(id1) || !findVertex(id2)) return false;
+        
+        for (auto it = vertexes[id1]->edges.begin(); it != vertexes[id1]->edges.end(); it++) {
+            if ((*it)->vertex[1]->id == id2) return true;
+        }
+
         return false;
     }
 
     Edge<TV,TE>* getEdge(string id1, string id2)
     {
-        if(!check_key(this->vertexes,id1)) throw("No existe");
-        if(!check_key(this->vertexes,id2)) throw("No existe");
-        auto it = this->vertexes[id1]->edges.begin();
-        while(it!=this->vertexes[id1]->edges.end())
-        {
-            if((*it)->vertexes[0]->id == id1 && (*it)->vertexes[1]->id == id2)
-            {
-                //cout<<"("<<(*it)->vertexes[0]->id<<"-"<<(*it)->vertexes[1]->id<<")"<<endl;
-                return (*it);
-            }
-            ++it;
+        if(!findVertex(id1) || !findVertex(id2)) throw("No existe vertice");
+        
+        for (auto it = vertexes[id1]->edges.begin(); it != vertexes[id1]->edges.end(); it++) {
+            if ((*it)->vertex[1]->id == id2) return (*it);
         }
+
         throw("No existe");
     }
 
-    // todavia es una idea------------------------------------------------ Para BFS, prim y kruskal
-    template<typename BinaryFunction>
-    void bfs(BinaryFunction bf) {
-        // variables
-        queue <Vertex> q;
-        unordered_set<Vertex> visited;
-        // estructuras auxiliares (lambda)
-        auto is_visited = [&visited](Vertex vx) -> bool {
-            return visited.find(vx) != end(visited);
-        };
-        // Paso #1: tomar cualquier vertice y agregarlo al Q y V
-        auto fv = 0;
-        q.push(fv);
-        visited.insert(fv);
-        // Paso #2: recorrer el Q si no esta vacio
-        while(!q.empty()) {
-            // 2.1: Obtener el valor del front
-            auto v = q.front();
-            auto it = find_if(begin(vertices), end(vertices),
-                              [&v](pair<identify_t, Vertex> item){
-                                  return item.second == v;
-                              });
-            bf(v, it->first);
-            // 2.2: Retirar del queue
+    bool findVertex(string key)
+    {
+        if (vertexes.find(key) == vertexes.end())
+            return false;
+        return true;
+    } 
+
+    Vertex<TV, TE> getVertex(string key) {
+        if (vertexes.find(key) == vertexes.end()) {
+            throw("No existe");
+        }
+        return vertexes[key];
+    }
+
+    void clear() {
+        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
+            (it->second)->edges.clear();
+        }
+        vertexes.clear();
+    }
+
+    void displayVertex(string id)
+    {
+        if(!findVertex(id))
+        {
+            cout<<"Cant display, Vertex not present"<<endl;
+            return;
+        }
+        cout<<"Vertex "<<id<<endl;
+        cout<<"data: "<<vertexes[id]->data<<endl;
+        cout<<"Edges: "<<endl;
+        for(auto& it : vertexes[id]->edges )
+            cout<<"("<<id<<","<<it->vertex[1]->id<<")"<<" ";
+        cout<<endl<< endl;;
+    }
+
+    vector<Edge<TV, TE>*> DFS(string start) {
+        vector<Edge<TV, TE>*> dfs_edges;
+
+        unordered_map<string, bool> visitado;
+        stack<Vertex<TV, TE>*> s;
+
+        s.push(vertexes[start]);
+        visitado[start] = true;
+
+        Vertex<TV, TE>* actual = s.top();
+        bool backtrack = true;
+        while (visitado.size() != vertexes.size()) {
+            backtrack = true;
+            for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
+                if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
+                    dfs_edges.push_back((*it));
+                    s.push((*it)->vertex[1]);
+                    visitado[(*it)->vertex[1]->id] = true;
+                    backtrack = false;
+                    break;
+                }
+            }
+            actual = s.top();
+            if (backtrack) s.pop();
+        }
+        return dfs_edges;
+    }
+    
+    vector<Edge<TV, TE>*> BFS(string start) {
+        vector<Edge<TV, TE>*> bfs_edges;
+
+        queue<Vertex<TV, TE>*> q;
+        unordered_map<string, bool> visitado;
+
+        q.push(vertexes[start]);
+        visitado[start] = true;
+
+        Vertex<TV, TE>* actual = q.front();
+        while (visitado.size() != vertexes.size()) {
             q.pop();
-            // 2.3: Agregar sus adjacentes
-            for (auto [a, w]: adjacents[v])
-                if (!is_visited(a)) {
-                    q.push(a);
-                    visited.insert(a);
-                }
-        }
-    }
-
-    int prim(string id){
-        vector<Edge> result;
-        unordered_set<Vertex> visited;
-        edge_queue_t available_edges(edge_compare);
-        auto is_visited = [&visited](Vertex vx) -> bool { // estructura lambda [variables fuera de la funcion a usar] (parametros de funcuin) tipo de return {cuerpo}
-            return visited.find(vx) != end(visited);
-        }; // funcion pequeña que se ve mas como una variable
-        // 1. ubicamos cualquier vertice
-        auto vx = vertexes[id];
-        visited.insert(vx);
-        // 2. agregamos el vertices seleccionado a visitados
-        for(auto [a, b]: adjacents[vx]){
-            available_edges.push({vx, a, b});
-
-        }
-        // 2.1 agregar las aristas adjacientes a disponibles "available_edges"
-        // recorrer el PQ edge_queue_t
-        // 3. reconocer si el PQ esta vacio
-        while(!available_edges.empty()){
-            // 3.1 reconocemos el tope del PQ
-            auto [vx, ad, weight] = available_edges.top();
-            // 3.2 pop
-            available_edges.pop();
-
-            if(!is_visited(ad)){
-                // 3.3.1 si el vertice es adjaciente () si es visitado
-                visited.insert(ad);
-                // 3.3.2 retorno la arista
-                result.push_back({vx, ad, weight});
-                // 3.3.3 agrego los adjacientes
-                for(auto [ad2, weight]: adjacents[ad]){
-                    if(!is_visited(ad2)){
-                        available_edges.push({ad, ad2, weight});
-                    }
+            for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
+                if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
+                    bfs_edges.push_back((*it));
+                    q.push((*it)->vertex[1]);
+                    visitado[(*it)->vertex[1]->id] = true;
                 }
             }
+            actual = q.front();
         }
-        return result;
+        return bfs_edges;
     }
 
-    int kruskal(){
-        edge_queue_t available_edges(edge_compare);
-        vector<Edge> result;
-        join_find jf(vertices.size()); // todavia solo es la idea
-        while(!available_edges.empty()){
-            auto [vx1, vx2, bl] = available_edges.top();
-            available_edges.pop();
-            if(jf.find(vx1) != jf.find(vx2)){
-                jf.join(vx1, vx2);
-                result.push_back({vx1, vx2, bl});
-            }
+    vector<Edge<TV, TE>*> prim(string start) {
+        vector<Edge<TV, TE>*> prim_edges;
+        auto comparador = [](Edge<TV, TE>* a, Edge<TV, TE>* b) {return a->weight > b->weight;};
+        priority_queue<Edge<TV, TE>*, vector<Edge<TV, TE>*>, decltype(comparador)> to_visit(comparador);
+        unordered_map<string, bool> visitado;
 
+        visitado[start] = true;
+        Vertex<TV, TE>* actual;
+
+        for (auto it = vertexes[start]->edges.begin(); it != vertexes[start]->edges.end(); it++) {
+            to_visit.push((*it));
         }
-        return result;
+
+        while (visitado.size() != vertexes.size()) {
+            prim_edges.push_back(to_visit.top());
+            visitado[to_visit.top()->vertex[1]->id] = true;
+            actual = (to_visit.top())->vertex[1];
+            for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
+                if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
+                    to_visit.push((*it));
+                }
+            }
+            to_visit.pop();
+        }
+        return prim_edges;
+    }
+
+    vector<Edge<TV, TE>*> kruskal() {
+        auto comparador = [](Edge<TV, TE>* a, Edge<TV, TE>* b) {return a->weight > b->weight;};
+        priority_queue<Edge<TV, TE>*, vector<Edge<TV, TE>*>, decltype(comparador)> to_visit(comparador);
+
+        vector<Edge<TV, TE>*> kruskal_edges;
+
+        unordered_map<string, bool> visitado;
+
+        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
+            for (auto edge = (it->second)->edges.begin(); edge != (it->second->edges.end()); edge++) {
+                to_visit.push((*edge));
+            }
+        }
+
+        Edge<TV, TE>* actual;
+        visitado[to_visit.top()->vertex[0]->id] = true;
+        while (visitado.size() != vertexes.size()) {
+            actual = to_visit.top();
+            if (visitado.find(actual->vertex[0]->id) == visitado.end() && visitado.find(actual->vertex[1]->id) == visitado.end()) {
+                visitado[actual->vertex[1]->id] = true;
+                kruskal_edges.push_back(actual);
+            }
+            to_visit.pop();
+        }
+        
+        return kruskal_edges;
     }
 };
 

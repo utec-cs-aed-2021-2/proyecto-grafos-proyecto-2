@@ -6,6 +6,14 @@
 
 using namespace std;
 
+template <typename TV, typename TE>
+void displayVector(vector<Edge<TV, TE>*> v) {
+  for (auto it = v.begin(); it != v.end(); it++) {
+    cout<<"("<<(*it)->vertex[0]->id<<","<<(*it)->vertex[1]->id<<")"<<" ";
+  }
+  cout << endl;
+}
+
 int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     std::cout << "MENU GRAPH TESTER" << std::endl;
@@ -66,26 +74,73 @@ int main(int argc, char *argv[]) {
     graph(a,b) = graph(a,b) + 5 ;
     cout<<"weight: a-b: "<<graph(a,b)<<endl;
 */
-    
-    auto dgraph = DirectedGraph<float,int>();
+    UnDirectedGraph<int, int> graph = UnDirectedGraph<int, int>();
+    graph.insertVertex(a, 0);
+    graph.insertVertex(b, 0);
+    graph.insertVertex(c, 0);
+    graph.insertVertex(d, 0);
+    graph.insertVertex(e, 0);
+    graph.createEdge(a, b, 1);
+    graph.createEdge(a, c, 6);
+    graph.createEdge(b, c, 4);
+    graph.createEdge(b, d, 3);
+    graph.createEdge(c, d, 1);
+    graph.createEdge(b, e, 1);
+    graph.createEdge(d, e, 1);
+
+    if (graph.isConnected()) {
+      cout << "El grafo es conexo" << endl;
+    } else {
+      cout << "El grafo no es conexo" << endl;
+    }
+
+    cout << "Aristas del algoritmo Prim: " << endl;
+    displayVector(graph.prim(e));
+
+    cout << "Aristas del algoritmo Kruskal: " << endl;
+    displayVector(graph.kruskal());
+
+    cout << "Aristas del BFS desde vertice c: " << endl;
+    displayVector(graph.BFS(c));
+
+    cout << "Aristas del DFS desde vertice a: " << endl;
+    displayVector(graph.DFS(a));
+
+    if (graph.isDense()) {
+      cout << "El grafo es denso con un factor de densidad de: " << graph.density() << endl;;
+    } else {
+      cout << "El grafo no es denso con un factor de densidad de: " << graph.density() << endl;
+    }
+
+
+    /*
+    DirectedGraph<float, int> dgraph = DirectedGraph<float,int>();
     dgraph.insertVertex(a,7.0);
     dgraph.insertVertex(b,8.0);
     dgraph.insertVertex(c,8.0);
-    dgraph.createEdge(a,b,69);
-    dgraph.createEdge(a,c,1);
+    dgraph.createEdge(b, a, 69);
+    dgraph.createEdge(a, c, 1);
+    dgraph.createEdge(c, a, 3);
+    dgraph.createEdge(b, c, 2);
+    dgraph.createEdge(a, b, 7);
+    cout << dgraph.isStronglyConnected() << endl;
     dgraph.displayVertex(a);
     dgraph.displayVertex(b);
-    dgraph.displayVertex(a);
-    /*if(dgraph.findByIdE(a,b)) cout<<"Encontrado"<<endl;
+    dgraph.displayVertex(c);
+    displayVector(dgraph.kruskal());
+    cout << "densidad: " << dgraph.density() << endl;
+    if(dgraph.findEdge(a,b)) cout<<"Encontrado"<<endl;
     else cout<<"Nay";
-    if(dgraph.findByIdE(b,a)) cout<<"Encontrado"<<endl;
+    if(dgraph.findEdge(b,a)) cout<<"Encontrado"<<endl;
     else cout<<"Nay"<<endl;
     cout<<dgraph.density()<<endl;
     if(dgraph.isDense()) cout<<"Denso pa"<<endl;
     else cout<<"No Denso"<<endl;
-    cout<<dgraph.getEdge(a,b)->weight<<endl;*/
+    cout<<dgraph.getEdge(a,b)->weight<<endl;
     dgraph.deleteVertex(b);
     dgraph.displayVertex(a);
+    cout << "densidad: " << dgraph.density() << endl;
+    */
     //Tester::executeExamples();
     //Tester::executeParser();
     
