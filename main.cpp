@@ -135,8 +135,8 @@ void DGTest() {
     cout << "El grafo no es fuertemente conexo" << endl;
   }
 
-  cout << "Aristas de BFS a partir de nodo v5: " << endl;
-  displayVector(dgraph.BFS(v5));
+  cout << "Aristas de BFS a partir de nodo v6: " << endl;
+  displayVector(dgraph.BFS(v6));
   cout << "Aristas de DFS a partir de nodo v6: " << endl;
   displayVector(dgraph.DFS(v6));
 

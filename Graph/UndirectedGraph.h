@@ -209,7 +209,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         visitado[start] = true;
 
         Vertex<TV, TE>* actual = q.front();
-        while (visitado.size() != vertexes.size()) {
+        while (!q.empty()) {
             q.pop();
             for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
                 if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
@@ -237,7 +237,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
         }
 
-        int count = 15;
         while (visitado.size() != vertexes.size()) {
             while (visitado.find(to_visit.top()->vertex[0]->id) != visitado.end() && visitado.find(to_visit.top()->vertex[1]->id) != visitado.end()) {
                 to_visit.pop();
@@ -248,8 +247,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
             for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
                 to_visit.push((*it));
             }
-            count--;
-            if (count == 0) break;
             to_visit.pop();
         }
         return prim_edges;
