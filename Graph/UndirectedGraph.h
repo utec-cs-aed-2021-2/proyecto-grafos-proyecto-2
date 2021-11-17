@@ -44,30 +44,34 @@ class UnDirectedGraph : public Graph<TV, TE>{
     bool deleteVertex(string id) {
         if (!findVertex(id)) return false;
         Vertex<TV, TE>* vert = vertexes[id];
+        vert->edges.clear();
         vertexes.erase(id);
         for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
             if ((it->second) != vert) {
-                for (auto edge = (it->second)->edges->begin(); edge != (*it)->edges->end(); edge++) {
-                    if ((*edge) == vert) {
-                        (*it)->edges.erase(edge);
+                for (auto edge = (it->second)->edges.begin(); edge != (it->second)->edges.end(); edge++) {
+                    if ((*edge)->vertex[1] == vert) {
+                        (it->second)->edges.erase(edge);
                     }
                 }
             }
         }
+        return true;
     }  
 
     bool deleteEdge(string id1, string id2) {
+        if (!findVertex(id1) || !findVertex(id2)) return false;
         for (auto it = vertexes[id1]->edges.begin(); it != vertexes[id1]->edges.end(); it++) {
-            if ((it->second)->vertex->id == id2) {
-                (it->second)->edges.erase(it);
+            if ((*it)->vertex[1]->id == id2) {
+                vertexes[id1]->edges.erase(it);
             }
         }
 
         for (auto it = vertexes[id2]->edges.begin(); it != vertexes[id2]->edges.end(); it++) {
-            if ((it->second)->vertex->id == id1) {
-                (it->second)->edges.erase(it);
+            if ((*it)->vertex[1]->id == id1) {
+                vertexes[id2]->edges.erase(it);
             }
         }
+        return true;
     }   
     TE &operator()(string start, string end) {
         if (!findVertex(start) || !findVertex(end)) throw("No existe");
@@ -96,9 +100,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
     bool isConnected() {
         unordered_map<string, bool> visitado;
-        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
-            visitado[(it->second)->id] = false;
-        }
         for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
             for (auto edge = (it->second)->edges.begin(); edge != (it->second)->edges.end(); edge++) {
                 visitado[(*edge)->vertex[1]->id] = true;
@@ -134,7 +135,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         cout<<"data: "<<vertexes[id]->data<<endl;
         cout<<"Edges: "<<endl;
         for(auto& it : vertexes[id]->edges )
-            cout<<"( "<<it->vertexes[0]->id<<","<<it->vertexes[1]->id<<")"<<" ";
+            cout<<"( "<<it->vertex[0]->id<<","<<it->vertex[1]->id<<")"<<" ";
         cout<<endl;
     }
 
@@ -233,17 +234,22 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
         for (auto it = vertexes[start]->edges.begin(); it != vertexes[start]->edges.end(); it++) {
             to_visit.push((*it));
+
         }
 
+        int count = 15;
         while (visitado.size() != vertexes.size()) {
+            while (visitado.find(to_visit.top()->vertex[0]->id) != visitado.end() && visitado.find(to_visit.top()->vertex[1]->id) != visitado.end()) {
+                to_visit.pop();
+            }
             prim_edges.push_back(to_visit.top());
             visitado[to_visit.top()->vertex[1]->id] = true;
             actual = (to_visit.top())->vertex[1];
             for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
-                if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
-                    to_visit.push((*it));
-                }
+                to_visit.push((*it));
             }
+            count--;
+            if (count == 0) break;
             to_visit.pop();
         }
         return prim_edges;
@@ -266,11 +272,12 @@ class UnDirectedGraph : public Graph<TV, TE>{
         Edge<TV, TE>* actual;
         visitado[to_visit.top()->vertex[0]->id] = true;
         while (visitado.size() != vertexes.size()) {
-            actual = to_visit.top();
-            if (visitado.find(actual->vertex[1]->id) == visitado.end()) {
-                visitado[actual->vertex[1]->id] = true;
-                kruskal_edges.push_back(actual);
+            while (visitado.find(to_visit.top()->vertex[0]->id) != visitado.end() && visitado.find(to_visit.top()->vertex[1]->id) != visitado.end()) {
+                to_visit.pop();
             }
+            actual = to_visit.top();
+            visitado[actual->vertex[1]->id] = true;
+            kruskal_edges.push_back(actual);
             to_visit.pop();
         }
         

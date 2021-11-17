@@ -176,12 +176,18 @@ class DirectedGraph : public Graph<TV, TE>{
         unordered_map<string, bool> visitado;
         stack<Vertex<TV, TE>*> s;
 
+        if (vertexes[start]->edges.size() == 0) {
+            cout << "Nodo sin nodos adyacentes" << endl;
+            return dfs_edges;
+        }
+
         s.push(vertexes[start]);
         visitado[start] = true;
 
         Vertex<TV, TE>* actual = s.top();
         bool backtrack = true;
         while (visitado.size() != vertexes.size()) {
+            cout << actual->id << endl;
             backtrack = true;
             for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
                 if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
@@ -192,6 +198,7 @@ class DirectedGraph : public Graph<TV, TE>{
                     break;
                 }
             }
+            if (backtrack && actual == vertexes[start]) break;
             actual = s.top();
             if (backtrack) s.pop();
         }
@@ -203,6 +210,11 @@ class DirectedGraph : public Graph<TV, TE>{
 
         queue<Vertex<TV, TE>*> q;
         unordered_map<string, bool> visitado;
+
+        if (vertexes[start]->edges.size() == 0) {
+            cout << "Nodo sin nodos adyacentes" << endl;
+            return bfs_edges;
+        }
 
         q.push(vertexes[start]);
         visitado[start] = true;
@@ -220,61 +232,6 @@ class DirectedGraph : public Graph<TV, TE>{
             actual = q.front();
         }
         return bfs_edges;
-    }
-
-    vector<Edge<TV, TE>*> prim(string start) {
-        vector<Edge<TV, TE>*> prim_edges;
-        auto comparador = [](Edge<TV, TE>* a, Edge<TV, TE>* b) {return a->weight > b->weight;};
-        priority_queue<Edge<TV, TE>*, vector<Edge<TV, TE>*>, decltype(comparador)> to_visit(comparador);
-        unordered_map<string, bool> visitado;
-
-        visitado[start] = true;
-        Vertex<TV, TE>* actual;
-
-        for (auto it = vertexes[start]->edges.begin(); it != vertexes[start]->edges.end(); it++) {
-            to_visit.push((*it));
-        }
-
-        while (visitado.size() != vertexes.size()) {
-            prim_edges.push_back(to_visit.top());
-            visitado[to_visit.top()->vertex[1]->id] = true;
-            actual = (to_visit.top())->vertex[1];
-            for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
-                if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
-                    to_visit.push((*it));
-                }
-            }
-            to_visit.pop();
-        }
-        return prim_edges;
-    }
-
-    vector<Edge<TV, TE>*> kruskal() {
-        auto comparador = [](Edge<TV, TE>* a, Edge<TV, TE>* b) {return a->weight > b->weight;};
-        priority_queue<Edge<TV, TE>*, vector<Edge<TV, TE>*>, decltype(comparador)> to_visit(comparador);
-
-        vector<Edge<TV, TE>*> kruskal_edges;
-
-        unordered_map<string, bool> visitado;
-
-        for (auto it = vertexes.begin(); it != vertexes.end(); it++) {
-            for (auto edge = (it->second)->edges.begin(); edge != (it->second->edges.end()); edge++) {
-                to_visit.push((*edge));
-            }
-        }
-
-        Edge<TV, TE>* actual;
-        visitado[to_visit.top()->vertex[0]->id] = true;
-        while (visitado.size() != vertexes.size()) {
-            actual = to_visit.top();
-            if (visitado.find(actual->vertex[0]->id) == visitado.end() && visitado.find(actual->vertex[1]->id) == visitado.end()) {
-                visitado[actual->vertex[1]->id] = true;
-                kruskal_edges.push_back(actual);
-            }
-            to_visit.pop();
-        }
-        
-        return kruskal_edges;
     }
 };
 
