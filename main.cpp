@@ -38,8 +38,8 @@ void UDGTest() {
     graph.createEdge(a, b, 1);
     graph.createEdge(a, c, 6);
     graph.createEdge(b, c, 4);
-    graph.createEdge(b, d, 1);
-    graph.createEdge(c, d, 3);
+    graph.createEdge(b, d, 3);
+    graph.createEdge(c, d, 1);
     graph.createEdge(b, e, 1);
     graph.createEdge(d, e, 1);
 
@@ -50,7 +50,7 @@ void UDGTest() {
     }
 
     cout << "Aristas del algoritmo Prim: " << endl;
-    displayVector(graph.prim(e));
+    displayVector(graph.prim(a));
 
     cout << "Aristas del algoritmo Kruskal: " << endl;
     displayVector(graph.kruskal());

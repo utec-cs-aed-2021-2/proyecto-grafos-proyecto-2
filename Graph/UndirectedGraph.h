@@ -182,7 +182,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
         Vertex<TV, TE>* actual = s.top();
         bool backtrack = true;
-        while (visitado.size() != vertexes.size()) {
+        while (!s.empty()) {
             backtrack = true;
             for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
                 if (visitado.find((*it)->vertex[1]->id) == visitado.end()) {
@@ -236,10 +236,12 @@ class UnDirectedGraph : public Graph<TV, TE>{
             to_visit.push((*it));
 
         }
-
-        while (visitado.size() != vertexes.size()) {
+        while (!to_visit.empty()) {
             while (visitado.find(to_visit.top()->vertex[0]->id) != visitado.end() && visitado.find(to_visit.top()->vertex[1]->id) != visitado.end()) {
                 to_visit.pop();
+                if (to_visit.empty()) {
+                    return prim_edges;
+                }
             }
             prim_edges.push_back(to_visit.top());
             visitado[to_visit.top()->vertex[1]->id] = true;
@@ -267,15 +269,21 @@ class UnDirectedGraph : public Graph<TV, TE>{
         }
 
         Edge<TV, TE>* actual;
+        int count = 15;
         visitado[to_visit.top()->vertex[0]->id] = true;
-        while (visitado.size() != vertexes.size()) {
+        while (!to_visit.empty()) {
             while (visitado.find(to_visit.top()->vertex[0]->id) != visitado.end() && visitado.find(to_visit.top()->vertex[1]->id) != visitado.end()) {
                 to_visit.pop();
+                if (to_visit.empty()) {
+                    return kruskal_edges;
+                }
             }
             actual = to_visit.top();
             visitado[actual->vertex[1]->id] = true;
             kruskal_edges.push_back(actual);
             to_visit.pop();
+            count--;
+            if (count == 0) break;
         }
         
         return kruskal_edges;
