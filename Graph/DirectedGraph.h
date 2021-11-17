@@ -184,9 +184,10 @@ class DirectedGraph : public Graph<TV, TE>{
         s.push(vertexes[start]);
         visitado[start] = true;
 
-        Vertex<TV, TE>* actual = s.top();
+        Vertex<TV, TE>* actual;
         bool backtrack = true;
         while (visitado.size() != vertexes.size()) {
+            actual = s.top();
             cout << actual->id << endl;
             backtrack = true;
             for (auto it = actual->edges.begin(); it != actual->edges.end(); it++) {
@@ -199,7 +200,6 @@ class DirectedGraph : public Graph<TV, TE>{
                 }
             }
             if (backtrack && actual == vertexes[start]) break;
-            actual = s.top();
             if (backtrack) s.pop();
         }
         return dfs_edges;

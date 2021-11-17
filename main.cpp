@@ -137,8 +137,8 @@ void DGTest() {
 
   cout << "Aristas de BFS a partir de nodo v5: " << endl;
   displayVector(dgraph.BFS(v5));
-  cout << "Aristas de DFS a partir de nodo v5: " << endl;
-  displayVector(dgraph.DFS(v5));
+  cout << "Aristas de DFS a partir de nodo v6: " << endl;
+  displayVector(dgraph.DFS(v6));
 
   cout << "La densidad del grafo es " << dgraph.density() << " por lo que es ";
   if (dgraph.isDense()) {
