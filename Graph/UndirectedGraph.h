@@ -269,7 +269,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
         }
 
         Edge<TV, TE>* actual;
-        int count = 15;
         visitado[to_visit.top()->vertex[0]->id] = true;
         while (!to_visit.empty()) {
             while (visitado.find(to_visit.top()->vertex[0]->id) != visitado.end() && visitado.find(to_visit.top()->vertex[1]->id) != visitado.end()) {
@@ -282,8 +281,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
             visitado[actual->vertex[1]->id] = true;
             kruskal_edges.push_back(actual);
             to_visit.pop();
-            count--;
-            if (count == 0) break;
         }
         
         return kruskal_edges;
