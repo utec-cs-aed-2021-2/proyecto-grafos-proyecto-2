@@ -1,9 +1,11 @@
 #include <iostream>
 #include "Graph/UndirectedGraph.h"
 #include "Graph/DirectedGraph.h"
+#include <nlohmann/json.hpp>
 //#include "Tester/tester.h"
 //#include "Parser/parser.h"
 
+using json = nlohmann::json;
 using namespace std;
 
 template <typename TV, typename TE>
