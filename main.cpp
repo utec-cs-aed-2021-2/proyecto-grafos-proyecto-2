@@ -6,7 +6,6 @@
 //#include "Parser/parser.h"
 
 using json = nlohmann::json;
-using s = std::string;
 using namespace std;
 
 template <typename TV, typename TE>
@@ -22,22 +21,22 @@ void UDGTest() {
     cout << "UnDirected Graph Test" << endl;
     cout << "---------------------" << endl;
     cout << "(grafo sacado de diapositiva 47 de ppt: Presentacion 05 (Grafos))" << endl;
-    s a = "a";
-    s b = "b";
-    s c = "c";
-    s d = "d";
-    s e = "e";
-    UnDirectedGraph<s, int> graph = UnDirectedGraph<s, int>();
+    string a = "a";
+    string b = "b";
+    string c = "c";
+    string d = "d";
+    string e = "e";
+    UnDirectedGraph<int, int> graph = UnDirectedGraph<int, int>();
     if (graph.empty()) {
       cout << "El grafo esta vacio" << endl;
     } else {
       cout << "El grafo no esta vacio" << endl;
     }
-    graph.insertVertex(a, a);
-    graph.insertVertex(b, b);
-    graph.insertVertex(c, c);
-    graph.insertVertex(d, d);
-    graph.insertVertex(e, e);
+    graph.insertVertex(a, 0);
+    graph.insertVertex(b, 0);
+    graph.insertVertex(c, 0);
+    graph.insertVertex(d, 0);
+    graph.insertVertex(e, 0);
     graph.createEdge(a, b, 1);
     graph.createEdge(a, c, 6);
     graph.createEdge(b, c, 4);
@@ -45,9 +44,6 @@ void UDGTest() {
     graph.createEdge(c, d, 1);
     graph.createEdge(b, e, 1);
     graph.createEdge(d, e, 1);
-
-    cout << "Aplicando Dijkstra: " << endl;
-    graph.dijkstra(a);
 
     if (graph.isConnected()) {
       cout << "El grafo es conexo" << endl;
@@ -106,15 +102,15 @@ void DGTest() {
   cout << "Directed Graph Test" << endl;
   cout << "-------------------" << endl;
   cout << "(grafo sacado de diapositiva 52 de ppt: Presentacion 05 (Grafos))" << endl;
-  s v1 = "v1";
-  s v2 = "v2";
-  s v3 = "v3";
-  s v4 = "v4";
-  s v5 = "v5";
-  s v6 = "v6";
-  s v7 = "v7";
-  s v8 = "v8";
-  DirectedGraph<s, int> dgraph = DirectedGraph<s, int>();
+  string v1 = "v1";
+  string v2 = "v2";
+  string v3 = "v3";
+  string v4 = "v4";
+  string v5 = "v5";
+  string v6 = "v6";
+  string v7 = "v7";
+  string v8 = "v8";
+  DirectedGraph<string, int> dgraph = DirectedGraph<string, int>();
   dgraph.insertVertex(v1, v1);
   dgraph.insertVertex(v2, v2);
   dgraph.insertVertex(v3, v3);

@@ -1,18 +1,23 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <algorithm>
 
 using json = nlohmann::json;
 using namespace std;
 
 
 int main(){
-    std::ifstream i("Parser/Data/testData.json");
+    ifstream i("Parser/Data/airports.json");
     json airports;
     i >> airports;
 
-    cout << airports["pi"] << endl;
+    string name = airports[0]["destinations"][1];
 
+    name.erase(remove(name.begin(), name.end(), '"'), name.end());
+
+    int dest = stoi(name);
+    cout << dest << endl;
 
     
     return EXIT_SUCCESS;
