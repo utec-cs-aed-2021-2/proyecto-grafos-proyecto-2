@@ -285,7 +285,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
         
         return kruskal_edges;
     }
-};
 
     void dijkstra(TV start) {
         unordered_map<TV, TV> padres;
@@ -344,7 +343,5 @@ class UnDirectedGraph : public Graph<TV, TE>{
         cout << endl;
     }
 };
-
-#endif
 
 #endif
