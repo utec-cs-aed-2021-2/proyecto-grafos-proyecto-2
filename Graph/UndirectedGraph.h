@@ -285,6 +285,57 @@ class UnDirectedGraph : public Graph<TV, TE>{
         
         return kruskal_edges;
     }
+
+    void dijkstra(TV start) {
+        unordered_map<TV, TV> padres;
+        unordered_map<TV, bool> visitados;
+        unordered_map<TV, TE> costos;
+
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            costos[(vert->first)] = INT_MAX;
+        }
+        cout << "Nodo incial: " << start << endl;
+
+        costos[start] = 0;
+        padres[start] = start;
+        
+        Vertex<TV, TE>* current; 
+        TV key;
+        while (visitados.size() != vertexes.size()) {
+            TE min = INT_MAX;
+            for (auto it = costos.begin(); it != costos.end(); it++) {
+                if (it->second < min && (visitados.find(it->first) == visitados.end())) {
+                    TV v = (it->first);
+                    current = vertexes[v];
+                    min = (it->second);
+                }
+            }
+            key = current->data;
+            for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
+                TE current_costo = costos[key];
+                TE nuevo_costo = current_costo + (*edge)->weight;
+                if (nuevo_costo < costos[(*edge)->vertex[1]->data]) {
+                    costos[(*edge)->vertex[1]->data] = nuevo_costo;
+                    padres[(*edge)->vertex[1]->data] = (*edge)->vertex[0]->data;
+                }
+            }
+
+            visitados[current->data] = true;
+        }
+
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            if (vert->first != start) {
+                TV current2 = (vert->first);
+                cout << "Costo para llegar al nodo " << current2 << ": " << costos[current2] << endl;
+                cout << current2 << " ";
+                while (current2 != start) {
+                    cout << padres[current2] << " ";
+                    current2 = padres[current2];
+                }
+                cout << endl;
+            }
+        }
+    }
 };
 
 #endif
