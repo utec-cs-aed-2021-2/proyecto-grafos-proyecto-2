@@ -304,12 +304,13 @@ class UnDirectedGraph : public Graph<TV, TE>{
         while (visitados.size() != vertexes.size()) {
             TE min = INT_MAX;
             for (auto it = costos.begin(); it != costos.end(); it++) {
-                if (it->second < min && (visitados.find(it->first) == visitados.end())) {
+                if (it->second <= min && (visitados.find(it->first) == visitados.end())) {
                     TV v = (it->first);
                     current = vertexes[v];
                     min = (it->second);
                 }
             }
+            if (min == INT_MAX) break;
             key = current->data;
             for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
                 TE current_costo = costos[key];
@@ -326,15 +327,20 @@ class UnDirectedGraph : public Graph<TV, TE>{
         for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
             if (vert->first != start) {
                 TV current2 = (vert->first);
-                cout << "Costo para llegar al nodo " << current2 << ": " << costos[current2] << endl;
-                cout << current2 << " ";
-                while (current2 != start) {
-                    cout << padres[current2] << " ";
-                    current2 = padres[current2];
+                if (padres.find(current2) == padres.end()) {
+                    cout << "No se puede llegar al nodo " << current2 << endl;
+                } else {
+                    cout << "Costo para llegar al nodo " << current2 << ": " << costos[current2] << endl;
+                    cout << current2 << " ";
+                    while (current2 != start) {
+                        cout << padres[current2] << " ";
+                        current2 = padres[current2];
+                    }
+                    cout << endl;
                 }
-                cout << endl;
             }
         }
+        cout << endl;
     }
 };
 

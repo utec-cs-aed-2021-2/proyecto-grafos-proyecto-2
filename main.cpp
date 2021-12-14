@@ -135,6 +135,8 @@ void DGTest() {
   dgraph.createEdge(v2, v4, 6);
   dgraph.createEdge(v4, v5, 16);
 
+  dgraph.dijkstra(v8);
+
   if (dgraph.isStronglyConnected()) {
     cout << "El grafo es fuertemente conexo" << endl;
   } else {
