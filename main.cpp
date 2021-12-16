@@ -170,6 +170,26 @@ void DGTest() {
   }
 }
 
+void testvideo() {
+  DirectedGraph<std::string, int> dgraph = DirectedGraph<std::string, int>();
+  dgraph.insertVertex("s", "s");
+  dgraph.insertVertex("e", "e");
+  dgraph.insertVertex("a", "a");
+  dgraph.insertVertex("d", "d");
+  dgraph.insertVertex("b", "b");
+  dgraph.insertVertex("c", "c");
+  dgraph.createEdge("s", "e", 8);
+  dgraph.createEdge("s", "a", 10);
+  dgraph.createEdge("e", "d", 1);
+  dgraph.createEdge("d", "a", -4);
+  dgraph.createEdge("d", "c", -1);
+  dgraph.createEdge("c", "b", -2);
+  dgraph.createEdge("a", "c", 2);
+  dgraph.createEdge("b", "a", 1);
+
+  dgraph.bellman_ford("s");
+}
+
 void testAirportsUndirected(){
   UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
   
@@ -182,8 +202,8 @@ int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     
 
-    UDGTest();
-    DGTest();
-
+    //UDGTest();
+    //DGTest();
+    testvideo();
     return EXIT_SUCCESS;
 }

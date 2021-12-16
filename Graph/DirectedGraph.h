@@ -344,6 +344,33 @@ class DirectedGraph : public Graph<TV, TE>{
         return matriz;
     }
 
+    void bellman_ford(TV start) {
+        unordered_map<string, TE> pesos;
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            pesos[vert->first] = INT_MAX/2;
+        }
+
+        pesos[start] = 0;
+
+        bool change = true;
+
+        while (change) {
+            change = false;
+            for (auto nodo = vertexes.begin(); nodo != vertexes.end(); nodo++) {
+                for (auto edge = (nodo->second)->edges.begin(); edge != (nodo->second)->edges.end(); edge++) {
+                    if (pesos[nodo->first] + (*edge)->weight < pesos[(*edge)->vertex[1]->data]) {
+                        pesos[(*edge)->vertex[1]->data] = pesos[nodo->first] + (*edge)->weight;
+                        change = true;
+                    }
+                }
+            }
+        }
+
+        for (auto val = pesos.begin(); val != pesos.end(); val++) {
+            cout << val->first << ": " << val->second << endl;
+        }
+    }
+
 };
 
 #endif
