@@ -3,6 +3,8 @@
 
 #include "graph.h"
 #include <stack>
+#include <map>
+#include <limits>
 #include <queue>
 
 template<typename TV, typename TE>
@@ -346,6 +348,61 @@ class UnDirectedGraph : public Graph<TV, TE>{
             }
         }
         cout << endl;
+    }
+
+    unordered_map<string, unordered_map<string, TE>> floyd_warshall() {
+        unordered_map<string, unordered_map<string, TE>> matriz;
+        
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            Vertex<TV, TE>* current = (vert->second);
+            auto node = (vert->first);
+
+            auto &actual = matriz[node];
+
+            for (auto vert2 = vertexes.begin(); vert2 != vertexes.end(); vert2++) {
+                string node2 = (vert2->first);
+                Vertex<TV, TE>* next = vert2->second;
+                bool found = false;
+                TE w;
+
+                for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
+                    if (vert2->first == (*edge)->vertex[1]->data){
+                        found = true;
+                        w = (*edge)->weight;
+                    }   
+                }
+                if (vert->first == vert2->first) {
+                    actual[vert2->first] = (TE) 0;
+                } else if (found) {
+                    actual[vert2->first] = w;
+                } else {
+                    actual[vert2->first] = INT_MAX/2;
+                }
+            }
+        }
+        
+        /*
+        for (auto it = matriz.begin(); it != matriz.end(); it++) {
+            cout << it->first << ": ";
+            for (auto it2 = (it->second).begin(); it2 != (it->second).end(); it2++) {
+                cout << it2->second << " ";
+            }
+            cout << endl;
+        }
+        */
+
+        for (auto v1 = vertexes.begin(); v1 != vertexes.end(); v1++) {
+            for (auto v2 = vertexes.begin(); v2 != vertexes.end(); v2++) {
+                for (auto v3 = vertexes.begin(); v3 != vertexes.end(); v3++) {
+                    if (matriz[v2->first][v3->first] > matriz[v2->first][v1->first] + matriz[v1->first][v3->first]) {
+                        matriz[v2->first][v3->first] = matriz[v2->first][v1->first] + matriz[v1->first][v3->first];
+                    }
+                }
+            }
+        }
+        
+
+        return matriz;
     }
 };
 #endif

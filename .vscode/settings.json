@@ -25,6 +25,7 @@
         "filesystem": "cpp",
         "__tree": "cpp",
         "forward_list": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "typeinfo": "cpp"
     }
 }

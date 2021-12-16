@@ -21,22 +21,22 @@ void UDGTest() {
     cout << "UnDirected Graph Test" << endl;
     cout << "---------------------" << endl;
     cout << "(grafo sacado de diapositiva 47 de ppt: Presentacion 05 (Grafos))" << endl;
-    string a = "a";
-    string b = "b";
-    string c = "c";
-    string d = "d";
-    string e = "e";
-    UnDirectedGraph<int, int> graph = UnDirectedGraph<int, int>();
+    std::string a = "a";
+    std::string b = "b";
+    std::string c = "c";
+    std::string d = "d";
+    std::string e = "e";
+    UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
     if (graph.empty()) {
       cout << "El grafo esta vacio" << endl;
     } else {
       cout << "El grafo no esta vacio" << endl;
     }
-    graph.insertVertex(a, 0);
-    graph.insertVertex(b, 0);
-    graph.insertVertex(c, 0);
-    graph.insertVertex(d, 0);
-    graph.insertVertex(e, 0);
+    graph.insertVertex(a, a);
+    graph.insertVertex(b, b);
+    graph.insertVertex(c, c);
+    graph.insertVertex(d, d);
+    graph.insertVertex(e, e);
     graph.createEdge(a, b, 1);
     graph.createEdge(a, c, 6);
     graph.createEdge(b, c, 4);
@@ -44,6 +44,8 @@ void UDGTest() {
     graph.createEdge(c, d, 1);
     graph.createEdge(b, e, 1);
     graph.createEdge(d, e, 1);
+
+    graph.floyd_warshall();
 
     if (graph.isConnected()) {
       cout << "El grafo es conexo" << endl;
@@ -102,15 +104,15 @@ void DGTest() {
   cout << "Directed Graph Test" << endl;
   cout << "-------------------" << endl;
   cout << "(grafo sacado de diapositiva 52 de ppt: Presentacion 05 (Grafos))" << endl;
-  string v1 = "v1";
-  string v2 = "v2";
-  string v3 = "v3";
-  string v4 = "v4";
-  string v5 = "v5";
-  string v6 = "v6";
-  string v7 = "v7";
-  string v8 = "v8";
-  DirectedGraph<string, int> dgraph = DirectedGraph<string, int>();
+  std::string v1 = "v1";
+  std::string v2 = "v2";
+  std::string v3 = "v3";
+  std::string v4 = "v4";
+  std::string v5 = "v5";
+  std::string v6 = "v6";
+  std::string v7 = "v7";
+  std::string v8 = "v8";
+  DirectedGraph<std::string, int> dgraph = DirectedGraph<std::string, int>();
   dgraph.insertVertex(v1, v1);
   dgraph.insertVertex(v2, v2);
   dgraph.insertVertex(v3, v3);
@@ -131,7 +133,7 @@ void DGTest() {
   dgraph.createEdge(v2, v4, 6);
   dgraph.createEdge(v4, v5, 16);
 
-  dgraph.dijkstra(v8);
+  dgraph.dijkstra(v1);
 
   if (dgraph.isStronglyConnected()) {
     cout << "El grafo es fuertemente conexo" << endl;
@@ -165,7 +167,7 @@ void DGTest() {
 }
 
 void testAirportsUndirected(){
-  UnDirectedGraph<string, int> graph = UnDirectedGraph<string, int>();
+  UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
   
 
 }
