@@ -45,6 +45,8 @@ void UDGTest() {
     graph.createEdge(b, e, 1);
     graph.createEdge(d, e, 1);
 
+    graph.dijkstra(e);
+
     graph.floyd_warshall();
 
     if (graph.isConnected()) {
@@ -132,6 +134,8 @@ void DGTest() {
   dgraph.createEdge(v1, v2, 4);
   dgraph.createEdge(v2, v4, 6);
   dgraph.createEdge(v4, v5, 16);
+
+  dgraph.floyd_warshall();
 
   dgraph.dijkstra(v1);
 
