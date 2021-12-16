@@ -190,12 +190,6 @@ void testvideo() {
   dgraph.bellman_ford("s");
 }
 
-void testAirportsUndirected(){
-  UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
-  
-
-}
-
 int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     std::cout << "MENU GRAPH TESTER" << std::endl;

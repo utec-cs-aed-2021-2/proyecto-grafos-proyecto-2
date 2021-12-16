@@ -3,6 +3,7 @@
 #include <fstream>
 #include <algorithm>
 #include "Graph/UndirectedGraph.h"
+#include "Graph/DirectedGraph.h"
 #include <vector>
 #include <cmath>
 
@@ -42,8 +43,7 @@ double getDistance(int pos1, int pos2, json airports){
 
 }
 
-
-int main(){
+void pruebaUndirected(){
     ifstream i("Parser/Data/pe.json");
     json airports;
     i >> airports;
@@ -82,6 +82,37 @@ int main(){
     displayVector(graph.kruskal());
     displayVector(graph.BFS(idStr));
     displayVector(graph.DFS(idStr));
+}
+
+void pruebaDirected(){
+    ifstream i("Parser/Data/pe.json");
+    json airports;
+    i >> airports;
+    DirectedGraph<string, int> graph = DirectedGraph<string, int>();
+
+    for(int x = 0; x < airports.size(); x++){
+        string idStr = airports[x]["Airport ID"];
+        idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
+        graph.insertVertex(idStr,idStr);
+    }
+
+    for(int x = 0; x < airports.size(); x++){
+        string idStr = airports[x]["Airport ID"];
+
+        idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
+        for(int j = 0; j < airports[x]["destinations"].size(); j++){
+            string destino = airports[x]["destinations"][j];
+            destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
+            graph.createEdge(idStr, destino, getDistance(x,j,airports));
+            cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+        }
+    }
+
+}
+
+
+int main(){
+    pruebaDirected();
 
    
     return EXIT_SUCCESS;
