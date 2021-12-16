@@ -24,12 +24,12 @@ double toRad(double degree) {
 }
 
 double getDistance(int pos1, int pos2, json airports){
-    string Lat1 = airports[pos1]["Latitude"];
-    string Long1 = airports[pos1]["Longitude"];
+    string Lat1 = airports[pos1]["Latitude"].is_null()? "0": airports[pos1]["Latitude"];
+    string Long1 = airports[pos1]["Longitude"].is_null()? "0": airports[pos1]["Longitude"];
     Lat1.erase(remove(Lat1.begin(), Lat1.end(), '"'), Lat1.end());
     Long1.erase(remove(Long1.begin(), Long1.end(), '"'), Long1.end());
-    string Lat2 = airports[pos2]["Latitude"];
-    string Long2 = airports[pos2]["Longitude"];
+    string Lat2 = airports[pos2]["Latitude"].is_null()? "0": airports[pos2]["Latitude"];
+    string Long2 = airports[pos2]["Longitude"].is_null()? "0": airports[pos2]["Longitude"];
     Lat2.erase(remove(Lat2.begin(), Lat2.end(), '"'), Lat2.end());
     Long2.erase(remove(Long2.begin(), Long2.end(), '"'), Long2.end());
 
@@ -75,8 +75,14 @@ int main(){
         }
     }
 
-   
+    string idStr = airports[0]["Airport ID"];
+    idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
 
-    
+    displayVector(graph.prim(idStr));
+    displayVector(graph.kruskal());
+    displayVector(graph.BFS(idStr));
+    displayVector(graph.DFS(idStr));
+
+   
     return EXIT_SUCCESS;
 }
