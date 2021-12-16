@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.cpp": "cpp",
         "__bit_reference": "cpp",
         "__hash_table": "cpp",
         "__split_buffer": "cpp",
@@ -20,6 +21,10 @@
         "stack": "cpp",
         "__locale": "cpp",
         "iostream": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "filesystem": "cpp",
+        "__tree": "cpp",
+        "forward_list": "cpp",
+        "map": "cpp"
     }
 }

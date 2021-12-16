@@ -38,6 +38,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         link2->vertex[0] = vertexes[id2];
         link2->vertex[1] = vertexes[id1];
         vert2->edges.push_front(link2);
+        cout << "Join: " << id1 << " and " << id2 << " with weight: " << w << endl;
         return true;
     }    
 
@@ -107,6 +108,10 @@ class UnDirectedGraph : public Graph<TV, TE>{
         }
         if (visitado.size() != vertexes.size()) return false;
         return true;
+    }
+
+    int size(){
+        return vertexes.size();
     }
 
     bool isStronglyConnected() {
@@ -285,7 +290,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
         
         return kruskal_edges;
     }
-};
 
     void dijkstra(TV start) {
         unordered_map<TV, TV> padres;
@@ -339,6 +343,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
     }
 };
 
-#endif
+
 
 #endif

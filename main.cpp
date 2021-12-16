@@ -162,6 +162,12 @@ void DGTest() {
   }
 }
 
+void testAirportsUndirected(){
+  UnDirectedGraph<string, int> graph = UnDirectedGraph<string, int>();
+  
+
+}
+
 int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     std::cout << "MENU GRAPH TESTER" << std::endl;
