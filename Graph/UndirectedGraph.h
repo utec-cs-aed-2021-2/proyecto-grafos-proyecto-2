@@ -38,7 +38,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
         link2->vertex[0] = vertexes[id2];
         link2->vertex[1] = vertexes[id1];
         vert2->edges.push_front(link2);
-        cout << "Join: " << id1 << " and " << id2 << " with weight: " << w << endl;
         return true;
     }    
 
@@ -165,6 +164,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         for (auto it = vertexes[id1]->edges.begin(); it != vertexes[id1]->edges.end(); it++) {
             if ((*it)->vertex[1]->id == id2) return true;
         }
+        return false;
     }
 
     Edge<TV, TE> getEdge(string id1, string id2) {
@@ -174,6 +174,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         }
         throw("No existe");
     }
+
 
     vector<Edge<TV, TE>*> DFS(string start) {
         vector<Edge<TV, TE>*> dfs_edges;

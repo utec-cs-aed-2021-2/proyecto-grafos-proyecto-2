@@ -11,6 +11,14 @@
 using json = nlohmann::json;
 using namespace std;
 
+template <typename TV, typename TE>
+void displayVector(vector<Edge<TV, TE>*> v) {
+  for (auto it = v.begin(); it != v.end(); it++) {
+    cout<<"("<<(*it)->vertex[0]->id<<","<<(*it)->vertex[1]->id<<"): "<< (*it)->weight<< " ";
+  }
+  cout << endl;
+}
+
 double toRad(double degree) {
     return degree/180 * pi;
 }
@@ -36,7 +44,7 @@ double getDistance(int pos1, int pos2, json airports){
 
 
 int main(){
-    ifstream i("Parser/Data/airports.json");
+    ifstream i("Parser/Data/pe.json");
     json airports;
     i >> airports;
     UnDirectedGraph<string, int> graph = UnDirectedGraph<string, int>();
@@ -60,12 +68,14 @@ int main(){
         for(int j = 0; j < airports[x]["destinations"].size(); j++){
             string destino = airports[x]["destinations"][j];
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
-            graph.createEdge(idStr, destino, getDistance(x,j,airports));
+            if(!graph.findEdge(idStr, destino)){
+                graph.createEdge(idStr, destino, getDistance(x,j,airports));
+                cout << "Join: " << idStr << " and " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+            }
         }
     }
 
-    cout << airports.size();
-
+   
 
     
     return EXIT_SUCCESS;
