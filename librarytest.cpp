@@ -25,6 +25,7 @@ double toRad(double degree) {
 }
 
 double getDistance(int pos1, int pos2, json airports){
+    bool noExiste = false;
     string Lat1 = airports[pos1]["Latitude"].is_null()? "0": airports[pos1]["Latitude"];
     string Long1 = airports[pos1]["Longitude"].is_null()? "0": airports[pos1]["Longitude"];
     Lat1.erase(remove(Lat1.begin(), Lat1.end(), '"'), Lat1.end());
@@ -34,12 +35,14 @@ double getDistance(int pos1, int pos2, json airports){
     Lat2.erase(remove(Lat2.begin(), Lat2.end(), '"'), Lat2.end());
     Long2.erase(remove(Long2.begin(), Long2.end(), '"'), Long2.end());
 
+    if(Long1 == "0" || Lat1 == "0" || Lat2 == "0" || Long2 == "0") noExiste = true;
+
     double lat1 = stod(Lat1), long1 = stod(Long1), lat2 = stod(Lat2), long2 = stod(Long2);
     double dist;
     dist = sin(toRad(lat1)) * sin(toRad(lat2)) + cos(toRad(lat1)) * cos(toRad(lat2)) * cos(toRad(long1 - long2));
     dist = acos(dist);
     dist = 6371 * dist;
-    return dist;
+    return noExiste? 0: dist;
 
 }
 
@@ -107,6 +110,10 @@ void pruebaDirected(){
             cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
         }
     }
+
+    string idStr = airports[0]["Airport ID"];
+    idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
+    displayVector(graph.BFS(idStr));
 
 }
 
