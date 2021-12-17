@@ -3,9 +3,13 @@
 
 #include "graph.h"
 #include <stack>
+#include <cmath>
 #include <map>
 #include <limits>
+#include <algorithm>
 #include <queue>
+
+#define pi 3.14159265358979323846
 
 template<typename TV, typename TE>
 class UnDirectedGraph : public Graph<TV, TE>{
@@ -28,16 +32,18 @@ class UnDirectedGraph : public Graph<TV, TE>{
     }
 
     double getDistance(string id1, string id2){
-        if (!findVertex(vertex1->id) || !findVertex(vertex2->id)) return 0;
-        Vertex<TV, TE>* vertex1 = getVertex(id1), vertex2 = getVertex(id2);
+        if (!findVertex(id1) || !findVertex(id2)) return 0;
+        Vertex<TV, TE>* vertex1 = getVertex(id1);
+        Vertex<TV, TE>* vertex2 = getVertex(id2);
+
         double lat1 = vertex1->lat, lon1 = vertex1->lon, lat2 = vertex2->lat, lon2 = vertex2->lon;
-        double lat1 = stod(Lat1), long1 = stod(Long1), lat2 = stod(Lat2), long2 = stod(Long2);
+
         double dist;
-        dist = sin(toRad(lat1)) * sin(toRad(lat2)) + cos(toRad(lat1)) * cos(toRad(lat2)) * cos(toRad(long1 - long2));
+        dist = sin(toRad(lat1)) * sin(toRad(lat2)) + cos(toRad(lat1)) * cos(toRad(lat2)) * cos(toRad(lon1 - lon2));
         dist = acos(dist);
         dist = 6371 * dist;
         return dist;
-    }  
+    }   
 
     bool createEdge(string id1, string id2, TE w)
     {
@@ -168,7 +174,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         return true;
     }
 
-    Vertex<TV, TE> getVertex(string key) {
+    Vertex<TV, TE>* getVertex(string key) {
         if (vertexes.find(key) == vertexes.end()) {
             throw("No existe");
         }
@@ -242,6 +248,9 @@ class UnDirectedGraph : public Graph<TV, TE>{
             actual = q.front();
         }
         return bfs_edges;
+    }
+    double toRad(double degree) {
+        return degree/180 * pi;
     }
 
     vector<Edge<TV, TE>*> prim(string start) {
@@ -332,17 +341,17 @@ class UnDirectedGraph : public Graph<TV, TE>{
                 }
             }
             if (min == INT_MAX) break;
-            key = current->data;
+            key = current->id;
             for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
                 TE current_costo = costos[key];
                 TE nuevo_costo = current_costo + (*edge)->weight;
-                if (nuevo_costo < costos[(*edge)->vertex[1]->data]) {
-                    costos[(*edge)->vertex[1]->data] = nuevo_costo;
-                    padres[(*edge)->vertex[1]->data] = (*edge)->vertex[0]->data;
+                if (nuevo_costo < costos[(*edge)->vertex[1]->id]) {
+                    costos[(*edge)->vertex[1]->id] = nuevo_costo;
+                    padres[(*edge)->vertex[1]->id] = (*edge)->vertex[0]->id;
                 }
             }
 
-            visitados[current->data] = true;
+            visitados[current->id] = true;
         }
 
         for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
@@ -380,7 +389,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
                 TE w;
 
                 for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
-                    if (vert2->first == (*edge)->vertex[1]->data){
+                    if (vert2->first == (*edge)->vertex[1]->id){
                         found = true;
                         w = (*edge)->weight;
                     }   
@@ -427,20 +436,20 @@ class UnDirectedGraph : public Graph<TV, TE>{
         unordered_map<string, bool> visitados;
 
         for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
-            visitados[(vert->first)->data] = false;
+            visitados[(vert->first)->id] = false;
         }
 
-        auto compare = [](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
-            return globales[v1->data] > globales[v2->data];
-        }
+        auto compare = [globales](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
+            return globales[v1->id] > globales[v2->id];
+        };
 
         priority_queue<Vertex<TV, TE>*, vector<Vertex<TV, TE>*>, decltype(compare)> posibles(compare);
 
         Vertex<TV, TE>* current = vertexes[start];
 
         posibles.push(current);
-        locales[current->data] = (TE) 0;
-        globales[current->data] = (TE) h(current, final);
+        locales[current->id] = (TE) 0;
+        globales[current->id] = (TE) h(current, vertexes[end]);
 
         while (!posibles.empty() && current != vertexes[end]) {
 
@@ -449,14 +458,14 @@ class UnDirectedGraph : public Graph<TV, TE>{
             
             for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
                 Edge<TV, TE>* adyacente = (*edge)->vertex[1];
-                if (!visitados[adyacente->data]) {
-                    posibles.push((adyacente);
+                if (!visitados[adyacente->id]) {
+                    posibles.push(adyacente);
                 }
-                TE local = locales[current->data] + h(current, adyacente);
+                TE local = locales[current->id] + h(current, adyacente);
                 if (local < locales[adyacente]) {
-                    padres[adyacente->data] = current;
-                    locales[adyacente->data] = local;
-                    globales[adyacente->data] = locales[adyacente->data] + h(adyacente, vertexes[end]);
+                    padres[adyacente->id] = current;
+                    locales[adyacente->id] = local;
+                    globales[adyacente->id] = locales[adyacente->id] + h(adyacente, vertexes[end]);
                 }
             }
         }

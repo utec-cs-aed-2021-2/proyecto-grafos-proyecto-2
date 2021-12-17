@@ -3,7 +3,13 @@
 
 #include "graph.h"
 #include <stack>
+#include <cmath>
 #include <vector>
+#include <algorithm>
+#include <string>
+#include <iostream>
+
+#define pi 3.14159265358979323846
 
 template<typename TV, typename TE>
 class DirectedGraph : public Graph<TV, TE>{
@@ -24,14 +30,20 @@ class DirectedGraph : public Graph<TV, TE>{
         vertexes[id] = vert;
         return true;
     }
+    double toRad(double degree) {
+        return degree/180 * pi;
+    }
+
 
     double getDistance(string id1, string id2){
-        if (!findVertex(vertex1->id) || !findVertex(vertex2->id)) return 0;
-        Vertex<TV, TE>* vertex1 = getVertex(id1), vertex2 = getVertex(id2);
+        if (!findVertex(id1) || !findVertex(id2)) return 0;
+        Vertex<TV, TE>* vertex1 = getVertex(id1);
+        Vertex<TV, TE>* vertex2 = getVertex(id2);
+
         double lat1 = vertex1->lat, lon1 = vertex1->lon, lat2 = vertex2->lat, lon2 = vertex2->lon;
-        double lat1 = stod(Lat1), long1 = stod(Long1), lat2 = stod(Lat2), long2 = stod(Long2);
+
         double dist;
-        dist = sin(toRad(lat1)) * sin(toRad(lat2)) + cos(toRad(lat1)) * cos(toRad(lat2)) * cos(toRad(long1 - long2));
+        dist = sin(toRad(lat1)) * sin(toRad(lat2)) + cos(toRad(lat1)) * cos(toRad(lat2)) * cos(toRad(lon1 - lon2));
         dist = acos(dist);
         dist = 6371 * dist;
         return dist;
@@ -155,7 +167,7 @@ class DirectedGraph : public Graph<TV, TE>{
         return true;
     } 
 
-    Vertex<TV, TE> getVertex(string key) {
+    Vertex<TV, TE>* getVertex(string key) {
         if (vertexes.find(key) == vertexes.end()) {
             throw("No existe");
         }
@@ -271,17 +283,17 @@ class DirectedGraph : public Graph<TV, TE>{
                 }
             }
             if (min == INT_MAX) break;
-            key = current->data;
+            key = current->id;
             for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
                 TE current_costo = costos[key];
                 TE nuevo_costo = current_costo + (*edge)->weight;
-                if (nuevo_costo < costos[(*edge)->vertex[1]->data]) {
-                    costos[(*edge)->vertex[1]->data] = nuevo_costo;
-                    padres[(*edge)->vertex[1]->data] = (*edge)->vertex[0]->data;
+                if (nuevo_costo < costos[(*edge)->vertex[1]->id]) {
+                    costos[(*edge)->vertex[1]->id] = nuevo_costo;
+                    padres[(*edge)->vertex[1]->id] = (*edge)->vertex[0]->id;
                 }
             }
 
-            visitados[current->data] = true;
+            visitados[current->id] = true;
         }
 
         for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
@@ -319,7 +331,7 @@ class DirectedGraph : public Graph<TV, TE>{
                 TE w;
 
                 for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
-                    if (vert2->first == (*edge)->vertex[1]->data){
+                    if (vert2->first == (*edge)->vertex[1]->id){
                         found = true;
                         w = (*edge)->weight;
                     }   
@@ -334,7 +346,6 @@ class DirectedGraph : public Graph<TV, TE>{
             }
         }
         
-        /*
         for (auto it = matriz.begin(); it != matriz.end(); it++) {
             cout << it->first << ": ";
             for (auto it2 = (it->second).begin(); it2 != (it->second).end(); it2++) {
@@ -342,7 +353,6 @@ class DirectedGraph : public Graph<TV, TE>{
             }
             cout << endl;
         }
-        */
 
         for (auto v1 = vertexes.begin(); v1 != vertexes.end(); v1++) {
             for (auto v2 = vertexes.begin(); v2 != vertexes.end(); v2++) {
@@ -353,6 +363,16 @@ class DirectedGraph : public Graph<TV, TE>{
                 }
             }
         }
+        cout << endl;
+        
+        for (auto it = matriz.begin(); it != matriz.end(); it++) {
+            cout << it->first << ": ";
+            for (auto it2 = (it->second).begin(); it2 != (it->second).end(); it2++) {
+                cout << it2->second << " ";
+            }
+            cout << endl;
+        }
+        
         
 
         return matriz;
@@ -367,13 +387,16 @@ class DirectedGraph : public Graph<TV, TE>{
         pesos[start] = 0;
 
         bool change = true;
+        for (auto val = pesos.begin(); val != pesos.end(); val++) {
+            cout << val->first << ": " << val->second << endl;
+        }
 
         while (change) {
             change = false;
             for (auto nodo = vertexes.begin(); nodo != vertexes.end(); nodo++) {
                 for (auto edge = (nodo->second)->edges.begin(); edge != (nodo->second)->edges.end(); edge++) {
-                    if (pesos[nodo->first] + (*edge)->weight < pesos[(*edge)->vertex[1]->data]) {
-                        pesos[(*edge)->vertex[1]->data] = pesos[nodo->first] + (*edge)->weight;
+                    if (pesos[nodo->first] + (*edge)->weight < pesos[(*edge)->vertex[1]->id]) {
+                        pesos[(*edge)->vertex[1]->id] = pesos[nodo->first] + (*edge)->weight;
                         change = true;
                     }
                 }
@@ -385,6 +408,71 @@ class DirectedGraph : public Graph<TV, TE>{
         }
     }
 
+    void astar(string start, string end) {
+        cout << "Buscando camino desde: " << vertexes[start]->data << " hacia " << vertexes[end]->data << endl;
+        unordered_map<string, TE> valores;
+        unordered_map<string, TE> pesos;
+        unordered_map<string, Vertex<TV, TE>*> padres;
+        unordered_map<string, bool> visitados;
+
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            visitados[(vert->first)] = false;
+            pesos[(vert->first)] = INT_MAX/2;
+            valores[(vert->first)] = INT_MAX/2;
+        }
+
+        auto compare = [valores](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
+            //cout << valores.at(v1->id) << " vs " << valores.at(v2->id) << endl;
+            return valores.at(v1->id) > valores.at(v2->id);
+        };
+
+        priority_queue<Vertex<TV, TE>*, vector<Vertex<TV, TE>*>, decltype(compare)> posibles(compare);
+
+        Vertex<TV, TE>* current = vertexes[start];
+
+        posibles.push(current);
+        pesos[current->id] = (TE) 0;
+        valores[current->id] = getDistance(current->id, vertexes[end]->id);
+
+        while (!posibles.empty() && current != vertexes[end]) {
+            while (!posibles.empty() && visitados[posibles.top()->id]) {
+                cout << posibles.top()->data << " ya ha sido visitado" << endl;
+                posibles.pop();
+            }
+
+            if (posibles.empty()) {
+                break;
+            }
+
+            if (current != vertexes[end])
+                visitados[current->id] = true;
+
+            current = posibles.top();
+            cout << "Desde el nodo: " << current->data<< endl;
+            for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
+                Vertex<TV, TE>* adyacente = (*edge)->vertex[1];
+                if (!visitados[adyacente->id]) {
+                    posibles.push(adyacente);
+                }
+                //cout << "   Hacia " << adyacente->data << endl;
+                TE nuevo_peso = pesos[current->id] + (*edge)->weight;
+                //cout << "   El paso arístico es: " << nuevo_peso << " ";
+                if (nuevo_peso < pesos[adyacente->id]) {
+                    //cout << "y es menor que su camino actual";
+                    pesos[adyacente->id] = pesos[current->id] + (*edge)->weight;
+                }
+                //cout << endl;
+                valores[adyacente->id] = pesos[adyacente->id] + getDistance(adyacente->id, vertexes[end]->id);
+                //cout << "   La suma heuristica es: " << valores[adyacente->id] << endl;
+                padres[adyacente->id] = current;
+                //cout << endl;
+            }
+
+        }
+
+        cout << current->id << endl;
+
+    }
 };
 
 #endif

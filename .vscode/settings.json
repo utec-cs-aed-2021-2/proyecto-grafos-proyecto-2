@@ -27,6 +27,8 @@
         "forward_list": "cpp",
         "map": "cpp",
         "typeinfo": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "valarray": "cpp",
+        "__node_handle": "cpp"
     }
 }
