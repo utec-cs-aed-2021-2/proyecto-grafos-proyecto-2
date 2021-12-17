@@ -451,12 +451,18 @@ class DirectedGraph : public Graph<TV, TE>{
 
 
         cout << "El camino es: " << endl;
-        while (current != vertexes[start]) {
-            cout << current->data << ", ";
-            current = padres[current->id];
-        }
-        cout << current->data << endl;
+        printPath(vertexes[start], current, padres);
 
+    }
+
+    void printPath(Vertex<TV, TE>* inicial, Vertex<TV, TE>* v, unordered_map<string, Vertex<TV, TE>*> padres) {
+        if (v == inicial) {
+            cout << v->data << ", ";
+            return;
+        }
+
+        printPath(inicial, padres[v->id], padres);
+        cout << v->data << ", ";
     }
 
     void astar(string start, string end) {
@@ -506,12 +512,17 @@ class DirectedGraph : public Graph<TV, TE>{
             }
         }
 
+        cout << "El camino es: " << endl;
+        printPath(vertexes[start], current, padres);
+
+/*
         cout << "El camino tiene un peso de: " << valores[current->id] << " y es: " << endl;
         while (current != vertexes[start]) {
             cout << current->data << ", ";
             current = padres[current->id];
         }
         cout << current->data << endl;
+        */
 
     }
 };
