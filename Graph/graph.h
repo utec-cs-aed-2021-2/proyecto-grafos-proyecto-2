@@ -29,6 +29,8 @@ struct Edge {
 template<typename TV, typename TE>
 struct Vertex {
     TV data;
+    double lat; //x
+    double lon; //y
     std::list<Edge<TV, TE>*> edges;
     string id;
 };

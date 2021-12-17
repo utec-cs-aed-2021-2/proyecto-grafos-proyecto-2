@@ -14,13 +14,27 @@ class DirectedGraph : public Graph<TV, TE>{
     ~DirectedGraph() {
         clear();
     }
-    bool insertVertex(string id, TV vertex)
+    bool insertVertex(string id, TV vertex, double lat, double lon)
     {
         Vertex<TV,TE>* vert = new Vertex<TV,TE>;
         vert->data = vertex;
         vert->id = id;
+        vert->lat = lat;
+        vert->lon = lon;
         vertexes[id] = vert;
         return true;
+    }
+
+    double getDistance(string id1, string id2){
+        if (!findVertex(vertex1->id) || !findVertex(vertex2->id)) return 0;
+        Vertex<TV, TE>* vertex1 = getVertex(id1), vertex2 = getVertex(id2);
+        double lat1 = vertex1->lat, lon1 = vertex1->lon, lat2 = vertex2->lat, lon2 = vertex2->lon;
+        double lat1 = stod(Lat1), long1 = stod(Long1), lat2 = stod(Lat2), long2 = stod(Long2);
+        double dist;
+        dist = sin(toRad(lat1)) * sin(toRad(lat2)) + cos(toRad(lat1)) * cos(toRad(lat2)) * cos(toRad(long1 - long2));
+        dist = acos(dist);
+        dist = 6371 * dist;
+        return dist;
     }  
 
     bool createEdge(string id1, string id2, TE w)
