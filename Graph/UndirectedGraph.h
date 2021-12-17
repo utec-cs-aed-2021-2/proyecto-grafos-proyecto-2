@@ -20,7 +20,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
     ~UnDirectedGraph() {
         clear();
     }
-    bool insertVertex(string id, TV vertex, double lat, double lon)
+    bool insertVertex(string id, TV vertex, double lat = 0, double lon = 0)
     {
         Vertex<TV,TE>* vert = new Vertex<TV,TE>;
         vert->data = vertex;
@@ -254,6 +254,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
     }
 
     vector<Edge<TV, TE>*> prim(string start) {
+        cout << "Prim desde " << vertexes[start]->data << ": " << endl;
         vector<Edge<TV, TE>*> prim_edges;
         auto comparador = [](Edge<TV, TE>* a, Edge<TV, TE>* b) {return a->weight > b->weight;};
         priority_queue<Edge<TV, TE>*, vector<Edge<TV, TE>*>, decltype(comparador)> to_visit(comparador);
@@ -317,7 +318,8 @@ class UnDirectedGraph : public Graph<TV, TE>{
     }
 
     void dijkstra(TV start) {
-        unordered_map<TV, TV> padres;
+        unordered_map<string, Vertex<TV, TE>*> padres;
+        //unordered_map<TV, TV> padres;
         unordered_map<TV, bool> visitados;
         unordered_map<TV, TE> costos;
 
@@ -327,7 +329,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
         cout << "Nodo incial: " << start << endl;
 
         costos[start] = 0;
-        padres[start] = start;
+        padres[start] = vertexes[start];
         
         Vertex<TV, TE>* current; 
         TV key;
@@ -347,7 +349,7 @@ class UnDirectedGraph : public Graph<TV, TE>{
                 TE nuevo_costo = current_costo + (*edge)->weight;
                 if (nuevo_costo < costos[(*edge)->vertex[1]->id]) {
                     costos[(*edge)->vertex[1]->id] = nuevo_costo;
-                    padres[(*edge)->vertex[1]->id] = (*edge)->vertex[0]->id;
+                    padres[(*edge)->vertex[1]->id] = (*edge)->vertex[0];
                 }
             }
 
@@ -361,11 +363,14 @@ class UnDirectedGraph : public Graph<TV, TE>{
                     cout << "No se puede llegar al nodo " << current2 << endl;
                 } else {
                     cout << "Costo para llegar al nodo " << current2 << ": " << costos[current2] << endl;
+                    printPath(vertexes[start], vertexes[current2], padres);
+                    /*
                     cout << current2 << " ";
                     while (current2 != start) {
                         cout << padres[current2] << " ";
                         current2 = padres[current2];
                     }
+                    */
                     cout << endl;
                 }
             }
@@ -403,16 +408,6 @@ class UnDirectedGraph : public Graph<TV, TE>{
                 }
             }
         }
-        
-        /*
-        for (auto it = matriz.begin(); it != matriz.end(); it++) {
-            cout << it->first << ": ";
-            for (auto it2 = (it->second).begin(); it2 != (it->second).end(); it2++) {
-                cout << it2->second << " ";
-            }
-            cout << endl;
-        }
-        */
 
         for (auto v1 = vertexes.begin(); v1 != vertexes.end(); v1++) {
             for (auto v2 = vertexes.begin(); v2 != vertexes.end(); v2++) {
@@ -423,6 +418,16 @@ class UnDirectedGraph : public Graph<TV, TE>{
                 }
             }
         }
+        cout << endl;
+        
+        for (auto it = matriz.begin(); it != matriz.end(); it++) {
+            cout << it->first << ": ";
+            for (auto it2 = (it->second).begin(); it2 != (it->second).end(); it2++) {
+                cout << it2->second << " ";
+            }
+            cout << endl;
+        }
+        
         
 
         return matriz;
@@ -507,12 +512,12 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
     void printPath(Vertex<TV, TE>* inicial, Vertex<TV, TE>* v, unordered_map<string, Vertex<TV, TE>*> padres) {
         if (v == inicial) {
-            cout << v->data << ", ";
+            cout << v->data << " -> ";
             return;
         }
 
         printPath(inicial, padres[v->id], padres);
-        cout << v->data << ", ";
+        cout << v->data << " -> ";
     }
 
     void astar(string start, string end) {

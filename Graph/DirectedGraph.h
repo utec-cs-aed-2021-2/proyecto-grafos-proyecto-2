@@ -20,7 +20,7 @@ class DirectedGraph : public Graph<TV, TE>{
     ~DirectedGraph() {
         clear();
     }
-    bool insertVertex(string id, TV vertex, double lat, double lon)
+    bool insertVertex(string id, TV vertex, double lat = 0, double lon = 0)
     {
         Vertex<TV,TE>* vert = new Vertex<TV,TE>;
         vert->data = vertex;
@@ -259,7 +259,8 @@ class DirectedGraph : public Graph<TV, TE>{
     }
 
     void dijkstra(TV start) {
-        unordered_map<TV, TV> padres;
+        unordered_map<string, Vertex<TV, TE>*> padres;
+        //unordered_map<TV, TV> padres;
         unordered_map<TV, bool> visitados;
         unordered_map<TV, TE> costos;
 
@@ -269,7 +270,7 @@ class DirectedGraph : public Graph<TV, TE>{
         cout << "Nodo incial: " << start << endl;
 
         costos[start] = 0;
-        padres[start] = start;
+        padres[start] = vertexes[start];
         
         Vertex<TV, TE>* current; 
         TV key;
@@ -289,7 +290,7 @@ class DirectedGraph : public Graph<TV, TE>{
                 TE nuevo_costo = current_costo + (*edge)->weight;
                 if (nuevo_costo < costos[(*edge)->vertex[1]->id]) {
                     costos[(*edge)->vertex[1]->id] = nuevo_costo;
-                    padres[(*edge)->vertex[1]->id] = (*edge)->vertex[0]->id;
+                    padres[(*edge)->vertex[1]->id] = (*edge)->vertex[0];
                 }
             }
 
@@ -303,11 +304,14 @@ class DirectedGraph : public Graph<TV, TE>{
                     cout << "No se puede llegar al nodo " << current2 << endl;
                 } else {
                     cout << "Costo para llegar al nodo " << current2 << ": " << costos[current2] << endl;
+                    printPath(vertexes[start], vertexes[current2], padres);
+                    /*
                     cout << current2 << " ";
                     while (current2 != start) {
                         cout << padres[current2] << " ";
                         current2 = padres[current2];
                     }
+                    */
                     cout << endl;
                 }
             }
@@ -379,9 +383,6 @@ class DirectedGraph : public Graph<TV, TE>{
         pesos[start] = 0;
 
         bool change = true;
-        for (auto val = pesos.begin(); val != pesos.end(); val++) {
-            cout << val->first << ": " << val->second << endl;
-        }
 
         while (change) {
             change = false;
@@ -449,12 +450,12 @@ class DirectedGraph : public Graph<TV, TE>{
 
     void printPath(Vertex<TV, TE>* inicial, Vertex<TV, TE>* v, unordered_map<string, Vertex<TV, TE>*> padres) {
         if (v == inicial) {
-            cout << v->data << ", ";
+            cout << v->data << " -> ";
             return;
         }
 
         printPath(inicial, padres[v->id], padres);
-        cout << v->data << ", ";
+        cout << v->data << " -> ";
     }
 
     void astar(string start, string end) {
