@@ -26,6 +26,7 @@
         "__tree": "cpp",
         "forward_list": "cpp",
         "map": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "algorithm": "cpp"
     }
 }
