@@ -267,7 +267,7 @@ class DirectedGraph : public Graph<TV, TE>{
         for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
             costos[(vert->first)] = INT_MAX;
         }
-        cout << "Nodo incial: " << start << endl;
+        cout << "Nodo incial: " << vertexes[start]->data << endl;
 
         costos[start] = 0;
         padres[start] = vertexes[start];

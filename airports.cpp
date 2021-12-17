@@ -46,6 +46,15 @@ double getDistance(int pos1, int pos2, json airports){
 
 }
 
+bool isNumber(std::string s) {
+    for (auto c = s.begin(); c != s.end(); c++) {
+        if (!(isdigit(*c) || (*c) == '.')) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void pruebaUndirected(){
     ifstream i("Parser/Data/pe.json");
     json airports;
@@ -93,7 +102,8 @@ void pruebaUndirected(){
 }
 
 void pruebaDirected(){
-    ifstream i("Parser/Data/pe.json");
+    ifstream i("Parser/Data/airports.json");
+    ifstream i("Parser/Data/airports.json");
     json airports;
     i >> airports;
     DirectedGraph<std::string, int> graph = DirectedGraph<std::string, int>();
@@ -103,11 +113,14 @@ void pruebaDirected(){
         std::string idStr = airports[x]["Airport ID"];
         std::string lat = airports[x]["Latitude"];
         std::string lon = airports[x]["Longitude"];
+        cout << lat << endl << lon << endl;
 
         name.erase(remove(name.begin(), name.end(), '"'), name.end());
         idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
         lat.erase(remove(lat.begin(), lat.end(), '"'), lat.end());
         lon.erase(remove(lon.begin(), lon.end(), '"'), lon.end());
+        if (!isNumber(lat)) lat = "0";
+        if (!isNumber(lon)) lon = "0";
 
         graph.insertVertex(idStr,name,stod(lat),stod(lon));
     }
@@ -128,20 +141,21 @@ void pruebaDirected(){
 
     std::string idStr = airports[0]["Airport ID"];
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
-    displayVector(graph.BFS(idStr));
+    cout << "Aplicando BFS desde Jorge Chavez: " << endl;
+    displayVector(graph.BFS("2789"));
     cout << endl;
+    cout << "Aplicando DFS desde Jorge Chavez: " << endl;
     displayVector(graph.DFS("2789"));
-    cout << endl;
+    cout << endl << "Aplicando dijkstra:" << endl;
     graph.dijkstra("2796");
-    cout << endl;
+    cout << endl << "Aplicando Bellman Ford desde Jorge Chavez:" << endl;
     graph.bellman_ford("2796");
-    cout << endl;
+    cout << endl << "Aplicando algoritmo Floyd Warshall: " << endl;
     graph.floyd_warshall();
     cout << endl;
     graph.astar("2789", "2796");
     cout << endl << endl;
     graph.bestfirst("2789", "2796");
-
 }
 
 
