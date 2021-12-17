@@ -10,6 +10,27 @@
 
 ----
 
+En este proyecto se han implementdo dos tipos de grafos utilizando una lista de adyacencia. Estos grafos son los grafos dirigidos y no dirigidos.
+
+Para cada uno de los grafos se ha implementado las siguientes funcionalidades:
+- DFS
+- BFS
+- Verficiar si el grafo es conexo (o fuertemente conexo segun sea el caso)
+- Calcular densidad de grafo
+- Dijkstra
+- A*
+- Bellman-Ford
+- Floyd Warshall
+- Best First Search
+
+Para el grafo no dirigido, se han implementado algunas funciones que no pueden ser implementadas en grafos dirigido como por ejemplo:
+- Kruskal
+- Prim
+
+Además, se ha generado un parser de json utilizando una libreria externa, para así ingresar la información sobre aeropuertos y convertirla en un grafo.
+
+Para probar los algoritmos, se han utilizado algunos ejemplos de grafos del PPT: Presentación 05 (Grafos) brindada en clase así como un video que brinda un grafo como ejemplo del algoritmo de Bellman-Ford.
+
 El proyecto del curso consiste en implementar una estructura de datos de grafo y un file parser. La estructura debe soportar los métodos y algoritmos descritos a continuacion:  
 
 
