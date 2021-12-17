@@ -1,0 +1,120 @@
+[
+    {
+        "City": "Juliaca",
+        "DBTZ": "U",
+        "Name": "Juliaca",
+        "Country": "Peru",
+        "IATA/FAA": "JUL",
+        "Longitude": "-70.158169",
+        "ICAO": "SPJL",
+        "Airport ID": "2792",
+        "Latitude": "-15.467103",
+        "Timezone": "12552",
+        "DST": "-5",
+        "destinations": [
+            "6067",
+            "2796",
+            "2789"
+        ]
+    },
+    {
+        "City": "Tumbes",
+        "DBTZ": "U",
+        "Name": "Pedro Canga",
+        "Country": "Peru",
+        "IATA/FAA": "TBP",
+        "Longitude": "-80.381356",
+        "ICAO": "SPME",
+        "Airport ID": "2796",
+        "Latitude": "-3.552528",
+        "Timezone": "115",
+        "DST": "-5",
+        "destinations": [
+            "2789"
+        ]
+    },
+    {
+        "City": "Camino Corto",
+        "DBTZ": "U",
+        "Name": "Camino Corto",
+        "Country": "Peru",
+        "IATA/FAA": "TBP",
+        "Longitude": "-80.381356",
+        "ICAO": "SPME",
+        "Airport ID": "111",
+        "Latitude": "-3.552528",
+        "Timezone": "115",
+        "DST": "-5",
+        "destinations": [
+            "2796"
+        ]
+    },
+    {
+        "City": "Huanuco",
+        "DBTZ": "U",
+        "Name": "Alferez Fap David Figueroa Fernandini Airport",
+        "Country": "Peru",
+        "IATA/FAA": "HUU",
+        "Longitude": "-76.204797",
+        "ICAO": "SPNC",
+        "Airport ID": "6067",
+        "Latitude": "-9.878811",
+        "Timezone": "6070",
+        "DST": "-5",
+        "destinations": [
+            "2789"
+        ]
+    },
+    {
+        "City": "Cajamarca",
+        "DBTZ": "U",
+        "Name": "Mayor General FAP Armando Revoredo Iglesias Airport",
+        "Country": "Peru",
+        "IATA/FAA": "CJA",
+        "Longitude": "-78.4894",
+        "ICAO": "SPJR",
+        "Airport ID": "6066",
+        "Latitude": "-7.139183",
+        "Timezone": "8781",
+        "DST": "-5",
+        "destinations": [
+            "2789"
+        ]
+    },
+    {
+        "City": "Puerto Maldonado",
+        "DBTZ": "U",
+        "Name": "Padre Aldamiz",
+        "Country": "Peru",
+        "IATA/FAA": "PEM",
+        "Longitude": "-69.228611",
+        "ICAO": "SPTU",
+        "Airport ID": "2808",
+        "Latitude": "-12.613611",
+        "Timezone": "659",
+        "DST": "-5",
+        "destinations": [
+            "8781",
+            "2789"
+        ]
+    },
+    {
+        "City": "Lima",
+        "DBTZ": "U",
+        "Name": "Jorge Chavez Intl",
+        "Country": "Peru",
+        "IATA/FAA": "LIM",
+        "Longitude": "-77.114319",
+        "ICAO": "SPIM",
+        "Airport ID": "2789",
+        "Latitude": "-12.021889",
+        "Timezone": "113",
+        "DST": "-5",
+        "destinations": [
+            "2808",
+            "6066",
+            "6067",
+            "111"
+        ]
+    }
+]

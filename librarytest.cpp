@@ -47,7 +47,7 @@ double getDistance(int pos1, int pos2, json airports){
 }
 
 void pruebaUndirected(){
-    ifstream i("Parser/Data/pe.json");
+    ifstream i("Parser/Data/small.json");
     json airports;
     i >> airports;
     UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
@@ -83,7 +83,7 @@ void pruebaUndirected(){
         }
     }
 
-    std::string idStr = airports[0]["Airport ID"];
+    std::string idStr = airports[5]["Airport ID"];
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
 
     displayVector(graph.prim(idStr));
@@ -99,7 +99,7 @@ void pruebaDirected(){
     DirectedGraph<std::string, int> graph = DirectedGraph<std::string, int>();
 
     for(int x = 0; x < airports.size(); x++){
-        std::string name = airports[x]["Name"];
+        std::string name = airports[x]["City"];
         std::string idStr = airports[x]["Airport ID"];
         std::string lat = airports[x]["Latitude"];
         std::string lon = airports[x]["Longitude"];
@@ -121,16 +121,18 @@ void pruebaDirected(){
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
             if(graph.findVertex(destino)){
                 graph.createEdge(idStr, destino, graph.getDistance(idStr,destino));
-                //cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+                cout << "Join: " << graph.getVertex(idStr)->data << " to " << graph.getVertex(destino)->data << " with weight: " << getDistance(x,j,airports) << endl;
             }
         }
     }
 
-    std::string idStr = airports[0]["Airport ID"];
+    std::string idStr = airports[5]["Airport ID"];
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
     displayVector(graph.BFS(idStr));
 
     graph.bestfirst("2789", "2796");
+
+    graph.astar("2789", "2796");
 
 }
 
