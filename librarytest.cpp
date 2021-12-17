@@ -71,9 +71,11 @@ void pruebaUndirected(){
         for(int j = 0; j < airports[x]["destinations"].size(); j++){
             string destino = airports[x]["destinations"][j];
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
-            if(!graph.findEdge(idStr, destino)){
+            if(graph.findVertex(destino)){
+                if(!graph.findEdge(idStr, destino)){
                 graph.createEdge(idStr, destino, getDistance(x,j,airports));
                 cout << "Join: " << idStr << " and " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+            }
             }
         }
     }
@@ -110,8 +112,10 @@ void pruebaDirected(){
         for(int j = 0; j < airports[x]["destinations"].size(); j++){
             string destino = airports[x]["destinations"][j];
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
-            graph.createEdge(idStr, destino, getDistance(x,j,airports));
-            cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+            if(graph.findVertex(destino)){
+                graph.createEdge(idStr, destino, getDistance(x,j,airports));
+                cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+            }
         }
     }
 
