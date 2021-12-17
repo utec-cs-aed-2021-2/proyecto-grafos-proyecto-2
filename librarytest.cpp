@@ -15,7 +15,7 @@ using namespace std;
 template <typename TV, typename TE>
 void displayVector(vector<Edge<TV, TE>*> v) {
   for (auto it = v.begin(); it != v.end(); it++) {
-    cout<<"("<<(*it)->vertex[0]->id<<","<<(*it)->vertex[1]->id<<"): "<< (*it)->weight<< " ";
+    cout<<"("<<(*it)->vertex[0]->data<<","<<(*it)->vertex[1]->data<<"): "<< (*it)->weight<< " ";
   }
   cout << endl;
 }
@@ -129,7 +129,17 @@ void pruebaDirected(){
     std::string idStr = airports[0]["Airport ID"];
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
     displayVector(graph.BFS(idStr));
-
+    cout << endl;
+    displayVector(graph.DFS("2789"));
+    cout << endl;
+    graph.dijkstra("2796");
+    cout << endl;
+    graph.bellman_ford("2796");
+    cout << endl;
+    graph.floyd_warshall();
+    cout << endl;
+    graph.astar("2789", "2796");
+    cout << endl << endl;
     graph.bestfirst("2789", "2796");
 
 }

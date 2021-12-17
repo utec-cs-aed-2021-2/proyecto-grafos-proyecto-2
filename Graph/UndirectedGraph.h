@@ -428,19 +428,50 @@ class UnDirectedGraph : public Graph<TV, TE>{
         return matriz;
     }
 
-    template <typename Lambda>
-    void astar(string start, string end, Lambda h) {
-        unordered_map<string, TE> locales;
-        unordered_map<string, TE> globales;
+    void bellman_ford(TV start) {
+        unordered_map<string, TE> pesos;
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            pesos[vert->first] = INT_MAX/2;
+        }
+
+        pesos[start] = 0;
+
+        bool change = true;
+        for (auto val = pesos.begin(); val != pesos.end(); val++) {
+            cout << val->first << ": " << val->second << endl;
+        }
+
+        while (change) {
+            change = false;
+            for (auto nodo = vertexes.begin(); nodo != vertexes.end(); nodo++) {
+                for (auto edge = (nodo->second)->edges.begin(); edge != (nodo->second)->edges.end(); edge++) {
+                    if (pesos[nodo->first] + (*edge)->weight < pesos[(*edge)->vertex[1]->id]) {
+                        pesos[(*edge)->vertex[1]->id] = pesos[nodo->first] + (*edge)->weight;
+                        change = true;
+                    }
+                }
+            }
+        }
+
+        for (auto val = pesos.begin(); val != pesos.end(); val++) {
+            cout << val->first << ": " << val->second << endl;
+        }
+    }
+
+    void bestfirst(string start, string end) {
+        cout << "Buscando camino con BestFirst Search desde: " << vertexes[start]->data << " hacia " << vertexes[end]->data << endl;
+        unordered_map<string, TE> valores;
         unordered_map<string, Vertex<TV, TE>*> padres;
         unordered_map<string, bool> visitados;
 
         for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
-            visitados[(vert->first)->id] = false;
+            visitados[(vert->first)] = false;
+            valores[(vert->first)] = INT_MAX/2;
+            valores[(vert->first)] = INT_MAX/2;
         }
 
-        auto compare = [globales](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
-            return globales[v1->id] > globales[v2->id];
+        auto compare = [valores](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
+            return valores.at(v1->id) > valores.at(v2->id);
         };
 
         priority_queue<Vertex<TV, TE>*, vector<Vertex<TV, TE>*>, decltype(compare)> posibles(compare);
@@ -448,28 +479,103 @@ class UnDirectedGraph : public Graph<TV, TE>{
         Vertex<TV, TE>* current = vertexes[start];
 
         posibles.push(current);
-        locales[current->id] = (TE) 0;
-        globales[current->id] = (TE) h(current, vertexes[end]);
+        valores[current->id] = getDistance(current->id, vertexes[end]->id);
 
-        while (!posibles.empty() && current != vertexes[end]) {
+        while (current != vertexes[end]) {
+            while (!posibles.empty() && visitados[posibles.top()->id]) {
+                posibles.pop();
+            }
 
-            if (current != vertexes[start] && current != vertexes[end])
-                visitados[current->data] = true;
-            
+            current = posibles.top();
+            visitados[current->id] = true;
+
             for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
-                Edge<TV, TE>* adyacente = (*edge)->vertex[1];
+                Vertex<TV, TE>* adyacente = (*edge)->vertex[1];
                 if (!visitados[adyacente->id]) {
                     posibles.push(adyacente);
                 }
-                TE local = locales[current->id] + h(current, adyacente);
-                if (local < locales[adyacente]) {
-                    padres[adyacente->id] = current;
-                    locales[adyacente->id] = local;
-                    globales[adyacente->id] = locales[adyacente->id] + h(adyacente, vertexes[end]);
-                }
+                valores[adyacente->id] = getDistance(adyacente->id, vertexes[end]->id);
+                padres[adyacente->id] = current;
             }
         }
 
+
+        cout << "El camino es: " << endl;
+        printPath(vertexes[start], current, padres);
+
     }
+
+    void printPath(Vertex<TV, TE>* inicial, Vertex<TV, TE>* v, unordered_map<string, Vertex<TV, TE>*> padres) {
+        if (v == inicial) {
+            cout << v->data << ", ";
+            return;
+        }
+
+        printPath(inicial, padres[v->id], padres);
+        cout << v->data << ", ";
+    }
+
+    void astar(string start, string end) {
+        cout << "Buscando camino con A* desde: " << vertexes[start]->data << " hacia " << vertexes[end]->data << endl;
+        unordered_map<string, TE> valores;
+        unordered_map<string, TE> pesos;
+        unordered_map<string, Vertex<TV, TE>*> padres;
+        unordered_map<string, bool> visitados;
+
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            visitados[(vert->first)] = false;
+            pesos[(vert->first)] = INT_MAX/2;
+            valores[(vert->first)] = INT_MAX/2;
+        }
+
+        auto compare = [valores](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
+            return valores.at(v1->id) > valores.at(v2->id);
+        };
+
+        priority_queue<Vertex<TV, TE>*, vector<Vertex<TV, TE>*>, decltype(compare)> posibles(compare);
+
+        Vertex<TV, TE>* current = vertexes[start];
+
+        posibles.push(current);
+        pesos[current->id] = (TE) 0;
+        valores[current->id] = getDistance(current->id, vertexes[end]->id);
+
+        while (!posibles.empty() && current != vertexes[end]) {
+            while (!posibles.empty() && visitados[posibles.top()->id]) {
+                posibles.pop();
+            }
+
+            current = posibles.top();
+            visitados[current->id] = true;
+
+            for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
+                Vertex<TV, TE>* adyacente = (*edge)->vertex[1];
+                if (!visitados[adyacente->id]) {
+                    posibles.push(adyacente);
+                }
+                TE nuevo_peso = pesos[current->id] + (*edge)->weight;
+                if (nuevo_peso < pesos[adyacente->id]) {
+                    pesos[adyacente->id] = pesos[current->id] + (*edge)->weight;
+                }
+                valores[adyacente->id] = pesos[adyacente->id] + getDistance(adyacente->id, vertexes[end]->id);
+                padres[adyacente->id] = current;
+            }
+        }
+
+        cout << "El camino es: " << endl;
+        printPath(vertexes[start], current, padres);
+
+        /*
+        cout << "El camino tiene un peso de: " << valores[current->id] << " y es: " << endl;
+        while (current != vertexes[start]) {
+            cout << current->data << ", ";
+            current = padres[current->id];
+        }
+        cout << current->data << endl;
+        */
+
+    }
+
+    
 };
 #endif

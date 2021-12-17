@@ -345,14 +345,6 @@ class DirectedGraph : public Graph<TV, TE>{
                 }
             }
         }
-        
-        for (auto it = matriz.begin(); it != matriz.end(); it++) {
-            cout << it->first << ": ";
-            for (auto it2 = (it->second).begin(); it2 != (it->second).end(); it2++) {
-                cout << it2->second << " ";
-            }
-            cout << endl;
-        }
 
         for (auto v1 = vertexes.begin(); v1 != vertexes.end(); v1++) {
             for (auto v2 = vertexes.begin(); v2 != vertexes.end(); v2++) {
