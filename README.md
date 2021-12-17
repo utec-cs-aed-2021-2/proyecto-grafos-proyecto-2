@@ -44,6 +44,7 @@ El proyecto del curso consiste en implementar una estructura de datos de grafo y
 * Se debe implementar los dos tipos de grafos: dirigidos y no-dirigidos.
 * No considerar loops ni multi-arista. 
 
+Las clases Grafo dirigido y Grafo No dirigido son derivadas de la clase padre grafo. La estructura del grafo está compuesta por un Unordered Map que contiene los vértices. Estos vértices son un objeto llamado Vertex donde se almacenan la data, la logitud, la latitud, una lista de edges y el id. Asimismo, los edges son un objeto que contiene el peso de la arista y un array de vértices donde se guardan los vértices iniciales y finales. 
 
 ### Methods:
 ```cpp
