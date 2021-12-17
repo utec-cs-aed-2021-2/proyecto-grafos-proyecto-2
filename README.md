@@ -13,6 +13,10 @@
 En este proyecto se han implementdo dos tipos de grafos utilizando una lista de adyacencia. Estos grafos son los grafos dirigidos y no dirigidos.
 
 Para cada uno de los grafos se ha implementado las siguientes funcionalidades:
+- Inserción de Vértices
+- Inserción de Aristas
+- Eliminación de Vertices
+- Eliminación de Aristas
 - DFS
 - BFS
 - Verficiar si el grafo es conexo (o fuertemente conexo segun sea el caso)
