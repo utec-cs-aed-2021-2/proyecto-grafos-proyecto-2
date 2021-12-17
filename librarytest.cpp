@@ -26,12 +26,12 @@ double toRad(double degree) {
 
 double getDistance(int pos1, int pos2, json airports){
     bool noExiste = false;
-    string Lat1 = airports[pos1]["Latitude"].is_null()? "0": airports[pos1]["Latitude"];
-    string Long1 = airports[pos1]["Longitude"].is_null()? "0": airports[pos1]["Longitude"];
+    std::string Lat1 = airports[pos1]["Latitude"].is_null()? "0": airports[pos1]["Latitude"];
+    std::string Long1 = airports[pos1]["Longitude"].is_null()? "0": airports[pos1]["Longitude"];
     Lat1.erase(remove(Lat1.begin(), Lat1.end(), '"'), Lat1.end());
     Long1.erase(remove(Long1.begin(), Long1.end(), '"'), Long1.end());
-    string Lat2 = airports[pos2]["Latitude"].is_null()? "0": airports[pos2]["Latitude"];
-    string Long2 = airports[pos2]["Longitude"].is_null()? "0": airports[pos2]["Longitude"];
+    std::string Lat2 = airports[pos2]["Latitude"].is_null()? "0": airports[pos2]["Latitude"];
+    std::string Long2 = airports[pos2]["Longitude"].is_null()? "0": airports[pos2]["Longitude"];
     Lat2.erase(remove(Lat2.begin(), Lat2.end(), '"'), Lat2.end());
     Long2.erase(remove(Long2.begin(), Long2.end(), '"'), Long2.end());
 
@@ -50,26 +50,26 @@ void pruebaUndirected(){
     ifstream i("Parser/Data/pe.json");
     json airports;
     i >> airports;
-    UnDirectedGraph<string, int> graph = UnDirectedGraph<string, int>();
+    UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
 
 
     for(int x = 0; x < airports.size(); x++){
 
-        string name = airports[x]["Name"];
-        string idStr = airports[x]["Airport ID"];
+        std::string name = airports[x]["Name"];
+        std::string idStr = airports[x]["Airport ID"];
 
         name.erase(remove(name.begin(), name.end(), '"'), name.end());
-        idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
+        idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());  
 
         graph.insertVertex(idStr,name);
     }
 
     for(int x = 0; x < airports.size(); x++){
-        string idStr = airports[x]["Airport ID"];
+        std::string idStr = airports[x]["Airport ID"];
 
         idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
         for(int j = 0; j < airports[x]["destinations"].size(); j++){
-            string destino = airports[x]["destinations"][j];
+            std::string destino = airports[x]["destinations"][j];
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
             if(!graph.findEdge(idStr, destino)){
                 graph.createEdge(idStr, destino, getDistance(x,j,airports));
@@ -78,7 +78,7 @@ void pruebaUndirected(){
         }
     }
 
-    string idStr = airports[0]["Airport ID"];
+    std::string idStr = airports[0]["Airport ID"];
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
 
     displayVector(graph.prim(idStr));
@@ -91,27 +91,27 @@ void pruebaDirected(){
     ifstream i("Parser/Data/pe.json");
     json airports;
     i >> airports;
-    DirectedGraph<string, int> graph = DirectedGraph<string, int>();
+    DirectedGraph<std::string, int> graph = DirectedGraph<std::string, int>();
 
     for(int x = 0; x < airports.size(); x++){
-        string idStr = airports[x]["Airport ID"];
+        std::string idStr = airports[x]["Airport ID"];
         idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
         graph.insertVertex(idStr,idStr);
     }
 
     for(int x = 0; x < airports.size(); x++){
-        string idStr = airports[x]["Airport ID"];
+        std::string idStr = airports[x]["Airport ID"];
 
         idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
         for(int j = 0; j < airports[x]["destinations"].size(); j++){
-            string destino = airports[x]["destinations"][j];
+            std::string destino = airports[x]["destinations"][j];
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
             graph.createEdge(idStr, destino, getDistance(x,j,airports));
             cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
         }
     }
 
-    string idStr = airports[0]["Airport ID"];
+    std::string idStr = airports[0]["Airport ID"];
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
     displayVector(graph.BFS(idStr));
 

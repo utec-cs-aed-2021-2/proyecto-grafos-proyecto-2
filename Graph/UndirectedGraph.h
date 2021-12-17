@@ -404,5 +404,49 @@ class UnDirectedGraph : public Graph<TV, TE>{
 
         return matriz;
     }
+
+    template <typename Lambda>
+    void astar(string start, string end, Lambda h) {
+        unordered_map<string, TE> locales;
+        unordered_map<string, TE> globales;
+        unordered_map<string, Vertex<TV, TE>*> padres;
+        unordered_map<string, bool> visitados;
+
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            visitados[(vert->first)->data] = false;
+        }
+
+        auto compare = [](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
+            return globales[v1->data] > globales[v2->data];
+        }
+
+        priority_queue<Vertex<TV, TE>*, vector<Vertex<TV, TE>*>, decltype(compare)> posibles(compare);
+
+        Vertex<TV, TE>* current = vertexes[start];
+
+        posibles.push(current);
+        locales[current->data] = (TE) 0;
+        globales[current->data] = (TE) h(current, final);
+
+        while (!posibles.empty() && current != vertexes[end]) {
+
+            if (current != vertexes[start] && current != vertexes[end])
+                visitados[current->data] = true;
+            
+            for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
+                Edge<TV, TE>* adyacente = (*edge)->vertex[1];
+                if (!visitados[adyacente->data]) {
+                    posibles.push((adyacente);
+                }
+                TE local = locales[current->data] + h(current, adyacente);
+                if (local < locales[adyacente]) {
+                    padres[adyacente->data] = current;
+                    locales[adyacente->data] = local;
+                    globales[adyacente->data] = locales[adyacente->data] + h(adyacente, vertexes[end]);
+                }
+            }
+        }
+
+    }
 };
 #endif
