@@ -135,3 +135,6 @@ void dGraphMake(DirectedGraph<string, double> &tempGraph); // Adds the parsed da
 
 
 > **PD:** Puntos extras sobre Evaluación Continua si se implementa una GUI.
+
+
+distance calculator: https://stackoverflow.com/questions/27126714/c-latitude-and-longitude-distance-calculator/63767823
