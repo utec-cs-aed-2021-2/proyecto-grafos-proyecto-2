@@ -21,11 +21,11 @@ void UDGTest() {
     cout << "UnDirected Graph Test" << endl;
     cout << "---------------------" << endl;
     cout << "(grafo sacado de diapositiva 47 de ppt: Presentacion 05 (Grafos))" << endl;
-    std::string a = "a";
-    std::string b = "b";
-    std::string c = "c";
-    std::string d = "d";
-    std::string e = "e";
+    std::string a = "0";
+    std::string b = "1";
+    std::string c = "2";
+    std::string d = "3";
+    std::string e = "4";
     UnDirectedGraph<std::string, int> graph = UnDirectedGraph<std::string, int>();
     if (graph.empty()) {
       cout << "El grafo esta vacio" << endl;
@@ -47,7 +47,9 @@ void UDGTest() {
 
     graph.dijkstra(e);
 
+    cout << "Algoritmo de Floyd Warshall: " << endl;
     graph.floyd_warshall();
+    cout << endl;
 
     if (graph.isConnected()) {
       cout << "El grafo es conexo" << endl;
@@ -55,16 +57,16 @@ void UDGTest() {
       cout << "El grafo no es conexo" << endl;
     }
 
-    cout << "Aristas del algoritmo Prim: " << endl;
+    cout << "Aristas del algoritmo Prim desde vertice 0: " << endl;
     displayVector(graph.prim(a));
 
     cout << "Aristas del algoritmo Kruskal: " << endl;
     displayVector(graph.kruskal());
 
-    cout << "Aristas del BFS desde vertice c: " << endl;
+    cout << "Aristas del BFS desde vertice 2: " << endl;
     displayVector(graph.BFS(c));
 
-    cout << "Aristas del DFS desde vertice a: " << endl;
+    cout << "Aristas del DFS desde vertice 0: " << endl;
     displayVector(graph.DFS(a));
 
     if (graph.isDense()) {
@@ -73,7 +75,7 @@ void UDGTest() {
       cout << "El grafo no es denso con un factor de densidad de: " << graph.density() << endl;
     }
 
-    cout << "Eliminando aristas (b, e) y (d, e)" << endl;
+    cout << "Eliminando aristas (1, 4) y (3, 4)" << endl;
     graph.deleteEdge(b, e);
     graph.deleteEdge(d, e);
     cout << "Luego de elminar las aristas, el grafo ";
@@ -83,7 +85,7 @@ void UDGTest() {
       cout << "ya no es conexo" << endl;
     }
 
-    cout << "Eliminando vertice e" << endl;
+    cout << "Eliminando vertice 4" << endl;
     graph.deleteVertex(e);
 
     if (graph.isConnected()) {
@@ -168,9 +170,14 @@ void DGTest() {
   } else {
     cout << "El grafo sigue no siendo fuertemente conexo" << endl;
   }
+  cout << endl;
 }
 
 void testvideo() {
+  cout << "-------------------" << endl;
+  cout << "Prueba Bellman Ford" << endl;
+  cout << "-------------------" << endl;
+  cout << "(grafo sacado de video: https://www.youtube.com/watch?v=obWXjtg0L64)" << endl;
   DirectedGraph<std::string, int> dgraph = DirectedGraph<std::string, int>();
   dgraph.insertVertex("s", "s");
   dgraph.insertVertex("e", "e");
@@ -196,8 +203,8 @@ int main(int argc, char *argv[]) {
     std::cout << "================================================" << std::endl;
     
 
-    //UDGTest();
-    //DGTest();
+    UDGTest();
+    DGTest();
     testvideo();
     return EXIT_SUCCESS;
 }
