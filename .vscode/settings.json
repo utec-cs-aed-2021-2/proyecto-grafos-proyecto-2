@@ -29,6 +29,7 @@
         "typeinfo": "cpp",
         "algorithm": "cpp",
         "valarray": "cpp",
-        "__node_handle": "cpp"
+        "__node_handle": "cpp",
+        "ios": "cpp"
     }
 }

@@ -408,8 +408,59 @@ class DirectedGraph : public Graph<TV, TE>{
         }
     }
 
+    void bestfirst(string start, string end) {
+        cout << "Buscando camino con BestFirst Search desde: " << vertexes[start]->data << " hacia " << vertexes[end]->data << endl;
+        unordered_map<string, TE> valores;
+        unordered_map<string, Vertex<TV, TE>*> padres;
+        unordered_map<string, bool> visitados;
+
+        for (auto vert = vertexes.begin(); vert != vertexes.end(); vert++) {
+            visitados[(vert->first)] = false;
+            valores[(vert->first)] = INT_MAX/2;
+            valores[(vert->first)] = INT_MAX/2;
+        }
+
+        auto compare = [valores](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
+            return valores.at(v1->id) > valores.at(v2->id);
+        };
+
+        priority_queue<Vertex<TV, TE>*, vector<Vertex<TV, TE>*>, decltype(compare)> posibles(compare);
+
+        Vertex<TV, TE>* current = vertexes[start];
+
+        posibles.push(current);
+        valores[current->id] = getDistance(current->id, vertexes[end]->id);
+
+        while (current != vertexes[end]) {
+            while (!posibles.empty() && visitados[posibles.top()->id]) {
+                posibles.pop();
+            }
+
+            current = posibles.top();
+            visitados[current->id] = true;
+
+            for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
+                Vertex<TV, TE>* adyacente = (*edge)->vertex[1];
+                if (!visitados[adyacente->id]) {
+                    posibles.push(adyacente);
+                }
+                valores[adyacente->id] = getDistance(adyacente->id, vertexes[end]->id);
+                padres[adyacente->id] = current;
+            }
+        }
+
+
+        cout << "El camino es: " << endl;
+        while (current != vertexes[start]) {
+            cout << current->data << ", ";
+            current = padres[current->id];
+        }
+        cout << current->data << endl;
+
+    }
+
     void astar(string start, string end) {
-        cout << "Buscando camino desde: " << vertexes[start]->data << " hacia " << vertexes[end]->data << endl;
+        cout << "Buscando camino con A* desde: " << vertexes[start]->data << " hacia " << vertexes[end]->data << endl;
         unordered_map<string, TE> valores;
         unordered_map<string, TE> pesos;
         unordered_map<string, Vertex<TV, TE>*> padres;
@@ -422,7 +473,6 @@ class DirectedGraph : public Graph<TV, TE>{
         }
 
         auto compare = [valores](Vertex<TV, TE>* v1, Vertex<TV, TE>* v2){
-            //cout << valores.at(v1->id) << " vs " << valores.at(v2->id) << endl;
             return valores.at(v1->id) > valores.at(v2->id);
         };
 
@@ -436,41 +486,32 @@ class DirectedGraph : public Graph<TV, TE>{
 
         while (!posibles.empty() && current != vertexes[end]) {
             while (!posibles.empty() && visitados[posibles.top()->id]) {
-                cout << posibles.top()->data << " ya ha sido visitado" << endl;
                 posibles.pop();
             }
 
-            if (posibles.empty()) {
-                break;
-            }
-
-            if (current != vertexes[end])
-                visitados[current->id] = true;
-
             current = posibles.top();
-            cout << "Desde el nodo: " << current->data<< endl;
+            visitados[current->id] = true;
+
             for (auto edge = current->edges.begin(); edge != current->edges.end(); edge++) {
                 Vertex<TV, TE>* adyacente = (*edge)->vertex[1];
                 if (!visitados[adyacente->id]) {
                     posibles.push(adyacente);
                 }
-                //cout << "   Hacia " << adyacente->data << endl;
                 TE nuevo_peso = pesos[current->id] + (*edge)->weight;
-                //cout << "   El paso arístico es: " << nuevo_peso << " ";
                 if (nuevo_peso < pesos[adyacente->id]) {
-                    //cout << "y es menor que su camino actual";
                     pesos[adyacente->id] = pesos[current->id] + (*edge)->weight;
                 }
-                //cout << endl;
                 valores[adyacente->id] = pesos[adyacente->id] + getDistance(adyacente->id, vertexes[end]->id);
-                //cout << "   La suma heuristica es: " << valores[adyacente->id] << endl;
                 padres[adyacente->id] = current;
-                //cout << endl;
             }
-
         }
 
-        cout << current->id << endl;
+        cout << "El camino tiene un peso de: " << valores[current->id] << " y es: " << endl;
+        while (current != vertexes[start]) {
+            cout << current->data << ", ";
+            current = padres[current->id];
+        }
+        cout << current->data << endl;
 
     }
 };

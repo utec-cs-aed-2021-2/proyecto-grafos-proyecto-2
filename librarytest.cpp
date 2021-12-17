@@ -121,7 +121,7 @@ void pruebaDirected(){
             destino.erase(remove(destino.begin(), destino.end(), '"'), destino.end());
             if(graph.findVertex(destino)){
                 graph.createEdge(idStr, destino, graph.getDistance(idStr,destino));
-                cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
+                //cout << "Join: " << idStr << " to " << destino << " with weight: " << getDistance(x,j,airports) << endl;
             }
         }
     }
@@ -130,7 +130,7 @@ void pruebaDirected(){
     idStr.erase(remove(idStr.begin(), idStr.end(), '"'), idStr.end());
     displayVector(graph.BFS(idStr));
 
-    graph.astar("2789", "2796");
+    graph.bestfirst("2789", "2796");
 
 }
 
