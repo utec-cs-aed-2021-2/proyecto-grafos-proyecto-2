@@ -48,9 +48,7 @@ double getDistance(int pos1, int pos2, json airports){
 
 bool isNumber(std::string s) {
     for (auto c = s.begin(); c != s.end(); c++) {
-        if (!(isdigit(*c) || (*c) == '.')) {
-            return false;
-        }
+        if (!(isdigit(*c) || (*c) == '.'|| (*c) == '-')) return false;
     }
     return true;
 }
@@ -102,8 +100,8 @@ void pruebaUndirected(){
 }
 
 void pruebaDirected(){
-    ifstream i("Parser/Data/airports.json");
-    ifstream i("Parser/Data/airports.json");
+    ifstream i("Parser/Data/pe.json");
+    //ifstream i("Parser/Data/airports.json");
     json airports;
     i >> airports;
     DirectedGraph<std::string, int> graph = DirectedGraph<std::string, int>();
