@@ -4,11 +4,36 @@
 --------
 
 ## Integrantes
-- 
-- 
-- 
+- Mauricio Croquet
+- Fracisco Maggot
+- Rubén Vargas
 
 ----
+
+En este proyecto se han implementdo dos tipos de grafos utilizando una lista de adyacencia. Estos grafos son los grafos dirigidos y no dirigidos.
+
+Para cada uno de los grafos se ha implementado las siguientes funcionalidades:
+- Inserción de Vértices
+- Inserción de Aristas
+- Eliminación de Vertices
+- Eliminación de Aristas
+- DFS
+- BFS
+- Verficiar si el grafo es conexo (o fuertemente conexo segun sea el caso)
+- Calcular densidad de grafo
+- Dijkstra
+- A*
+- Bellman-Ford
+- Floyd Warshall
+- Best First Search
+
+Para el grafo no dirigido, se han implementado algunas funciones que no pueden ser implementadas en grafos dirigido como por ejemplo:
+- Kruskal
+- Prim
+
+Además, se ha generado un parser de json utilizando una libreria externa, para así ingresar la información sobre aeropuertos y convertirla en un grafo.
+
+Para probar los algoritmos, se han utilizado algunos ejemplos de grafos del PPT: Presentación 05 (Grafos) brindada en clase así como un video que brinda un grafo como ejemplo del algoritmo de Bellman-Ford.
 
 El proyecto del curso consiste en implementar una estructura de datos de grafo y un file parser. La estructura debe soportar los métodos y algoritmos descritos a continuacion:  
 
@@ -19,6 +44,7 @@ El proyecto del curso consiste en implementar una estructura de datos de grafo y
 * Se debe implementar los dos tipos de grafos: dirigidos y no-dirigidos.
 * No considerar loops ni multi-arista. 
 
+Las clases Grafo dirigido y Grafo No dirigido son derivadas de la clase padre grafo. La estructura del grafo está compuesta por un Unordered Map que contiene los vértices. Estos vértices son un objeto llamado Vertex donde se almacenan la data, la logitud, la latitud, una lista de edges y el id. Asimismo, los edges son un objeto que contiene el peso de la arista y un array de vértices donde se guardan los vértices iniciales y finales. 
 
 ### Methods:
 ```cpp
@@ -110,3 +136,6 @@ void dGraphMake(DirectedGraph<string, double> &tempGraph); // Adds the parsed da
 
 
 > **PD:** Puntos extras sobre Evaluación Continua si se implementa una GUI.
+
+
+distance calculator: https://stackoverflow.com/questions/27126714/c-latitude-and-longitude-distance-calculator/63767823
